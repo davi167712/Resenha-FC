@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pelada Manager</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-index">
+ 
+  <!-- Fundo: gramado com linhas -->
+  <div class="bg-grass">
+    <div class="grass-lines"></div>
+    <div class="grass-circle"></div>
+    <div class="grass-overlay"></div>
+  </div>
+ 
+  <div class="container">
+ 
+    <!-- Hero -->
+    <header class="hero">
+      <div class="hero-tag">⚽ Gerador de Times</div>
+      <h1 class="hero-title">PELADA<br><span>MANAGER</span></h1>
+      <p class="hero-sub">Monte os times, embaralhe e domine o campo</p>
+    </header>
+ 
+    <!-- Formulário principal -->
+    <div class="form-wrapper">
+ 
+      <!-- Coluna esquerda: textarea -->
+      <div class="form-col form-col-main">
+        <div class="field-header">
+          <span class="field-icon">👥</span>
+          <label class="field-label" for="nomes">Jogadores</label>
+          <span class="field-hint">um por linha</span>
+          <span class="contador" id="contador">0 jogadores</span>
+        </div>
+        <textarea
+          id="nomes"
+          class="textarea"
+          placeholder="Fernando&#10;Christian&#10;Erick&#10;Felipin&#10;..."
+          rows="12"
+          spellcheck="false"
+        ></textarea>
+      </div>
+ 
+      <!-- Coluna direita: configuração + ações -->
+      <div class="form-col form-col-side">
+ 
+        <div class="side-block">
+          <div class="field-header">
+            <span class="field-icon">🏃</span>
+            <label class="field-label" for="porTime">Por time</label>
+          </div>
+          <div class="num-control">
+            <button class="num-btn" id="numMenos">−</button>
+            <input type="number" id="porTime" class="input-num" value="5" min="1" max="20"/>
+            <button class="num-btn" id="numMais">+</button>
+          </div>
+          <p class="num-hint" id="numHint">Times de 5 jogadores</p>
+        </div>
+ 
+        <div class="side-actions">
+          <button class="action-btn action-primary" id="btnEmbaralhar">
+            <span class="action-icon">🔀</span>
+            <span class="action-text">
+              <strong>Embaralhar</strong>
+             
+            </span>
+          </button>
+ 
+        
+ 
+          <button class="action-btn action-danger" id="btnLimpar">
+            <span class="action-icon">🗑️</span>
+            <span class="action-text">
+              <strong>Limpar</strong>
+              <small>apagar tudo</small>
+            </span>
+          </button>
+        </div>
+ 
+      </div>
+    </div>
+ 
+    <div id="msgErro" class="msg-erro hidden"></div>
+ 
+    <!-- Rodapé com dica -->
+    <div class="tip-bar">
+      💡 <strong>Dica:</strong>  Colque os nomes na ordem que os jogadores chegaram!
+    </div>
+ 
+  </div>
+ 
+  <script src="script.js"></script>
+  <script>
+    // Contador de jogadores em tempo real
+    const txtNomes = document.getElementById('nomes');
+    const contador = document.getElementById('contador');
+    const numHint  = document.getElementById('numHint');
+    const porTime  = document.getElementById('porTime');
+    const numMenos = document.getElementById('numMenos');
+    const numMais  = document.getElementById('numMais');
+ 
+    function atualizarContador() {
+      const nomes = txtNomes.value.split('\n').map(n => n.trim()).filter(n => n.length > 0);
+      const n = nomes.length;
+      contador.textContent = n === 0 ? 'nenhum jogador' : n === 1 ? '1 jogador' : `${n} jogadores`;
+      contador.classList.toggle('contador-ok', n >= 2);
+    }
+ 
+    function atualizarHint() {
+      const v = parseInt(porTime.value) || 5;
+      numHint.textContent = `Times de ${v} jogador${v !== 1 ? 'es' : ''}`;
+    }
+ 
+    txtNomes.addEventListener('input', atualizarContador);
+    porTime.addEventListener('input', atualizarHint);
+ 
+    numMenos.addEventListener('click', () => {
+      const v = parseInt(porTime.value) || 5;
+      if (v > 1) { porTime.value = v - 1; atualizarHint(); }
+    });
+    numMais.addEventListener('click', () => {
+      const v = parseInt(porTime.value) || 5;
+      if (v < 20) { porTime.value = v + 1; atualizarHint(); }
+    });
+ 
+    // Restaura porTime salvo
+    const por = localStorage.getItem('pelada_porTime');
+    if (por) { porTime.value = por; atualizarHint(); }
+  </script>
+</body>
+</html>
+ 

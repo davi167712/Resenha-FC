@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pelada Manager — Jogo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body class="page-jogo">
+
+  <div class="bg-field"></div>
+
+  <div class="container">
+
+    <!-- Placar -->
+    <header class="placar-header">
+      <div class="time-nome time-a-cor">TIME A</div>
+      <div class="placar-box">
+        <span id="golsA" class="placar-num">0</span>
+        <span class="vs">VS</span>
+        <span id="golsB" class="placar-num">0</span>
+      </div>
+      <div class="time-nome time-b-cor">TIME B</div>
+    </header>
+
+    <!-- Botões de resultado -->
+    <div class="resultado-btns">
+      <button class="btn btn-venceu time-a-btn" id="venceuA">🏆 Venceu A</button>
+      <button class="btn btn-empate" id="empate">🤝 Empate</button>
+      <button class="btn btn-venceu time-b-btn" id="venceuB">🏆 Venceu B</button>
+    </div>
+
+    <!-- Cronômetro -->
+    <div class="crono-card">
+      <div class="crono-display" id="cronoDisplay">7:00</div>
+      <div class="crono-btns">
+        <button class="crono-btn crono-iniciar" id="cronoBtnIniciar">▶ Iniciar</button>
+        <button class="crono-btn crono-pausar" id="cronoBtnPausar" disabled>⏸ Pausar</button>
+        <button class="crono-btn crono-reset" id="cronoBtnReset">↺ Reiniciar</button>
+      </div>
+    </div>
+
+        <!-- Times -->
+    <div class="times-grid">
+      <div class="time-card time-a">
+        <div class="time-title time-a-cor">⚡ TIME A</div>
+        <ul id="listaA" class="jogadores-lista"></ul>
+      </div>
+      <div class="time-card time-b">
+        <div class="time-title time-b-cor">🔥 TIME B</div>
+        <ul id="listaB" class="jogadores-lista"></ul>
+      </div>
+    </div>
+
+    <!-- Fila de espera -->
+    <div class="fila-card">
+      <div class="fila-title">⏳ Fila de Espera</div>
+      <ul id="filaLista" class="fila-lista"></ul>
+      <div id="filaVazia" class="fila-vazia hidden">Nenhum jogador na fila</div>
+    </div>
+
+    <!-- 🏅 Artilharia — histórico acumulado -->
+    <div class="artilharia-card">
+      <div class="artilharia-header">
+        <div class="artilharia-title">🏅 Artilharia Geral</div>
+        <small class="artilharia-sub">Gols acumulados de todas as peladas</small>
+      </div>
+      <ul id="artilhariaLista" class="artilharia-lista"></ul>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="rodape-btns">
+      <button class="btn btn-gray" id="btnReset">🔄 Resetar Placar</button>
+      <button class="btn btn-red" id="btnLimparHistorico">🗑️ Limpar Histórico</button>
+      <a href="index.html" class="btn btn-outline" id="btnVoltar">← Nova Pelada</a>
+    </div>
+
+  </div>
+
+  <script src="jogo.js"></script>
+  <script>
+    // Ao clicar em "Nova Pelada", limpa o estado do jogo atual
+    // mas MANTÉM o histórico de gols acumulados
+    document.getElementById('btnVoltar').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('pelada_estado');
+      localStorage.removeItem('pelada_jogadores');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
