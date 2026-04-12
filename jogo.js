@@ -1,25 +1,14 @@
 /* =========================================
-   PELADA MANAGER — jogo.js (Tela 2)
-
-   LÓGICA DE RODÍZIO:
-   - A fila é circular: quem sai vai pro FIM da fila
-   - Quem está há mais tempo esperando está na FRENTE
-   - SAIR individual → o próximo da fila entra no lugar (mesmo time)
-   - VENCEU → o time perdedor sai todo, próximos da fila entram
-   - EMPATE → AMBOS os times saem, entram os reservas da fila.
-              Se não tiver reservas suficientes, completa com quem
-              jogou MENOS dos times que saíram (ordenado por jogos asc)
+   FUT DO IF — jogo.js
    ========================================= */
 
 // ----- Estado global -----
-let timeA   = [];   // { nome, gols, jogos, vitorias }
+let timeA   = [];
 let timeB   = [];
-let fila    = [];   // fila circular de espera
+let fila    = [];
 let golsA   = 0;
 let golsB   = 0;
 let porTime = 5;
-
-// Histórico acumulado de gols (persiste entre peladas)
 let historico = {};
 
 // =============================================
@@ -27,8 +16,7 @@ let historico = {};
 // =============================================
 
 function salvarEstado() {
-  const estado = { timeA, timeB, fila, golsA, golsB };
-  localStorage.setItem('pelada_estado', JSON.stringify(estado));
+  localStorage.setItem('pelada_estado',    JSON.stringify({ timeA, timeB, fila, golsA, golsB }));
   localStorage.setItem('pelada_historico', JSON.stringify(historico));
 }
 
@@ -41,49 +29,16 @@ function registrarGolNoHistorico(nome) {
   historico[nome] = (historico[nome] || 0) + 1;
 }
 
+function desfazerGolNoHistorico(nome) {
+  if (historico[nome] > 0) historico[nome]--;
+}
+
 // =============================================
 // INICIALIZAÇÃO
 // =============================================
 
-function carregarDados() {
-  carregarHistorico();
-
-  porTime = parseInt(localStorage.getItem('pelada_porTime') || '5');
-
-  const estadoSalvo = localStorage.getItem('pelada_estado');
-  if (estadoSalvo) {
-    const e = JSON.parse(estadoSalvo);
-    timeA  = (e.timeA  || []).map(migrarJogador);
-    timeB  = (e.timeB  || []).map(migrarJogador);
-    fila   = (e.fila   || []).map(migrarJogador);
-    golsA  = e.golsA  || 0;
-    golsB  = e.golsB  || 0;
-    return;
-  }
-
-  const jogadores = JSON.parse(localStorage.getItem('pelada_jogadores') || '[]');
-
-  if (jogadores.length === 0) {
-    window.location.href = 'index.html';
-    return;
-  }
-
-  timeA = [];
-  timeB = [];
-  fila  = [];
-
-  for (let i = 0; i < jogadores.length; i++) {
-    const jogador = criarJogador(jogadores[i]);
-    if (i < porTime) {
-      timeA.push(jogador);
-    } else if (i < porTime * 2) {
-      timeB.push(jogador);
-    } else {
-      fila.push(jogador);
-    }
-  }
-
-  salvarEstado();
+function criarJogador(nome) {
+  return { nome, gols: 0, jogos: 0, vitorias: 0 };
 }
 
 function migrarJogador(j) {
@@ -95,21 +50,47 @@ function migrarJogador(j) {
   };
 }
 
-function criarJogador(nome) {
-  return { nome, gols: 0, jogos: 0, vitorias: 0 };
+function carregarDados() {
+  carregarHistorico();
+  porTime = parseInt(localStorage.getItem('pelada_porTime') || '5');
+
+  const estadoSalvo = localStorage.getItem('pelada_estado');
+  if (estadoSalvo) {
+    const e = JSON.parse(estadoSalvo);
+    timeA = (e.timeA || []).map(migrarJogador);
+    timeB = (e.timeB || []).map(migrarJogador);
+    fila  = (e.fila  || []).map(migrarJogador);
+    golsA = e.golsA || 0;
+    golsB = e.golsB || 0;
+    return;
+  }
+
+  const jogadores = JSON.parse(localStorage.getItem('pelada_jogadores') || '[]');
+  if (jogadores.length === 0) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  timeA = [];
+  timeB = [];
+  fila  = [];
+
+  for (let i = 0; i < jogadores.length; i++) {
+    const j = criarJogador(jogadores[i]);
+    if      (i < porTime)     timeA.push(j);
+    else if (i < porTime * 2) timeB.push(j);
+    else                      fila.push(j);
+  }
+
+  salvarEstado();
 }
 
 // =============================================
 // CONTADORES DE PARTIDA
 // =============================================
 
-function contarJogos(time) {
-  time.forEach(j => j.jogos++);
-}
-
-function contarVitorias(time) {
-  time.forEach(j => j.vitorias++);
-}
+function contarJogos(time)    { time.forEach(j => j.jogos++); }
+function contarVitorias(time) { time.forEach(j => j.vitorias++); }
 
 // =============================================
 // RENDERIZAÇÃO
@@ -128,7 +109,7 @@ function renderTime(idLista, time, qual) {
   lista.innerHTML = '';
 
   if (time.length === 0) {
-    lista.innerHTML = '<li style="color:var(--cinza);font-style:italic;font-size:.9rem;">Sem jogadores</li>';
+    lista.innerHTML = '<li style="color:var(--txt-3);font-style:italic;font-size:.9rem;">Sem jogadores</li>';
     return;
   }
 
@@ -140,8 +121,9 @@ function renderTime(idLista, time, qual) {
       <span class="gols-badge">⚽ ${jogador.gols}</span>
       <span class="stat-badge">🎮 ${jogador.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${jogador.vitorias}v</span>
-      <button class="btn-gol"  data-time="${qual}" data-idx="${idx}">+ GOL</button>
-      <button class="btn-sair" data-time="${qual}" data-idx="${idx}">SAIR</button>
+      <button class="btn-gol"   data-time="${qual}" data-idx="${idx}">+ GOL</button>
+      <button class="btn-rmgol" data-time="${qual}" data-idx="${idx}" ${jogador.gols === 0 ? 'disabled' : ''}>− GOL</button>
+      <button class="btn-sair"  data-time="${qual}" data-idx="${idx}">SAIR</button>
     `;
     lista.appendChild(li);
   });
@@ -158,7 +140,6 @@ function renderFila() {
   }
 
   vazia.classList.add('hidden');
-
   fila.forEach((j, idx) => {
     const li = document.createElement('li');
     li.className = 'fila-jogador';
@@ -175,28 +156,22 @@ function renderFila() {
 function renderPlacar() {
   const elA = document.getElementById('golsA');
   const elB = document.getElementById('golsB');
-
   const antA = elA.textContent;
   const antB = elB.textContent;
-
   elA.textContent = golsA;
   elB.textContent = golsB;
-
   if (antA !== String(golsA)) animarPlacar(elA);
   if (antB !== String(golsB)) animarPlacar(elB);
 }
 
 function animarPlacar(el) {
   el.style.animation = 'none';
-  requestAnimationFrame(() => {
-    el.style.animation = 'pulse-num .35s ease';
-  });
+  requestAnimationFrame(() => { el.style.animation = 'pulse-num .35s ease'; });
 }
 
 function renderArtilharia() {
   const lista = document.getElementById('artilhariaLista');
   if (!lista) return;
-
   lista.innerHTML = '';
 
   [...timeA, ...timeB, ...fila].forEach(j => {
@@ -226,136 +201,94 @@ function renderArtilharia() {
 }
 
 // =============================================
-// AÇÕES
+// AÇÕES DE JOGADORES
 // =============================================
 
 function adicionarGol(qual, idx) {
-  let jogador;
-  if (qual === 'A') {
-    timeA[idx].gols++;
-    golsA++;
-    jogador = timeA[idx];
-  } else {
-    timeB[idx].gols++;
-    golsB++;
-    jogador = timeB[idx];
-  }
-  registrarGolNoHistorico(jogador.nome);
+  const time = qual === 'A' ? timeA : timeB;
+  time[idx].gols++;
+  if (qual === 'A') golsA++; else golsB++;
+  registrarGolNoHistorico(time[idx].nome);
   salvarEstado();
   renderTudo();
 }
 
-// SAIR individual:
-// → jogador vai pro fim da fila (zerando gols, mantendo jogos/vitorias)
-// → próximo da fila entra no lugar dele (mesmo time)
+function removerGol(qual, idx) {
+  const time = qual === 'A' ? timeA : timeB;
+  if (time[idx].gols <= 0) return;
+  time[idx].gols--;
+  if (qual === 'A') golsA = Math.max(0, golsA - 1);
+  else              golsB = Math.max(0, golsB - 1);
+  desfazerGolNoHistorico(time[idx].nome);
+  salvarEstado();
+  renderTudo();
+}
+
 function sairTime(qual, idx) {
   const time = qual === 'A' ? timeA : timeB;
-
   const removido = time.splice(idx, 1)[0];
   removido.gols = 0;
   fila.push(removido);
-
   if (fila.length > 0) {
-    const proximo = fila.shift();
-    time.push(proximo);
+    time.push(fila.shift());
   }
-
   salvarEstado();
   renderTudo();
+}
+
+function resetarPlacar() {
+  golsA = 0;
+  golsB = 0;
 }
 
 // =============================================
 // BOTÕES DE RESULTADO
 // =============================================
 
-// VENCEU A: time B sai, fila completa o B
 document.getElementById('venceuA').addEventListener('click', () => {
   contarJogos(timeA);
   contarJogos(timeB);
   contarVitorias(timeA);
-
   timeB.forEach(j => { j.gols = 0; fila.push(j); });
   timeB = [];
-
-  while (timeB.length < porTime && fila.length > 0) {
-    timeB.push(fila.shift());
-  }
-
+  while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
   timeA.forEach(j => j.gols = 0);
-
   resetarPlacar();
   salvarEstado();
   renderTudo();
 });
 
-// VENCEU B: time A sai, fila completa o A
 document.getElementById('venceuB').addEventListener('click', () => {
   contarJogos(timeA);
   contarJogos(timeB);
   contarVitorias(timeB);
-
   timeA.forEach(j => { j.gols = 0; fila.push(j); });
   timeA = [];
-
-  while (timeA.length < porTime && fila.length > 0) {
-    timeA.push(fila.shift());
-  }
-
+  while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   timeB.forEach(j => j.gols = 0);
-
   resetarPlacar();
   salvarEstado();
   renderTudo();
 });
 
-// EMPATE:
-// 1. Conta jogos para todos
-// 2. AMBOS os times saem (pool ordenado por menos jogos)
-// 3. Reservas da fila entram primeiro
-// 4. Se ainda faltar, completa com quem jogou menos do pool
-// 5. Sobras do pool voltam para o fim da fila
 document.getElementById('empate').addEventListener('click', () => {
   contarJogos(timeA);
   contarJogos(timeB);
-
-  // Junta todos que estavam jogando e zera gols
-  const poolSaindo = [...timeA, ...timeB].map(j => ({ ...j, gols: 0 }));
+  const pool = [...timeA, ...timeB].map(j => ({ ...j, gols: 0 }));
   timeA = [];
   timeB = [];
-
-  // Reservas da fila entram primeiro
-  while (timeA.length < porTime && fila.length > 0) {
-    timeA.push(fila.shift());
-  }
-  while (timeB.length < porTime && fila.length > 0) {
-    timeB.push(fila.shift());
-  }
-
-  // Ordena o pool que saiu por quem jogou menos
-  poolSaindo.sort((a, b) => a.jogos - b.jogos);
-
-  // Completa time A com quem jogou menos
-  let poolIdx = 0;
-  while (timeA.length < porTime && poolIdx < poolSaindo.length) {
-    timeA.push(poolSaindo[poolIdx++]);
-  }
-
-  // Completa time B com quem jogou menos
-  while (timeB.length < porTime && poolIdx < poolSaindo.length) {
-    timeB.push(poolSaindo[poolIdx++]);
-  }
-
-  // Sobras voltam pro fim da fila (já estão ordenados por menos jogos)
-  while (poolIdx < poolSaindo.length) {
-    fila.push(poolSaindo[poolIdx++]);
-  }
-
+  while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
+  while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
+  pool.sort((a, b) => a.jogos - b.jogos);
+  let pi = 0;
+  while (timeA.length < porTime && pi < pool.length) timeA.push(pool[pi++]);
+  while (timeB.length < porTime && pi < pool.length) timeB.push(pool[pi++]);
+  while (pi < pool.length) fila.push(pool[pi++]);
   resetarPlacar();
   salvarEstado();
   renderTudo();
 });
 
-// RESET: zera gols da partida sem mexer nos times
 document.getElementById('btnReset').addEventListener('click', () => {
   timeA.forEach(j => j.gols = 0);
   timeB.forEach(j => j.gols = 0);
@@ -364,31 +297,36 @@ document.getElementById('btnReset').addEventListener('click', () => {
   renderTudo();
 });
 
-// Limpar histórico acumulado
 document.getElementById('btnLimparHistorico').addEventListener('click', () => {
-  if (confirm('Apagar todo o histórico de gols acumulados? Isso não pode ser desfeito.')) {
+  if (confirm('Apagar todo o histórico de gols? Isso não pode ser desfeito.')) {
     historico = {};
     localStorage.removeItem('pelada_historico');
     renderArtilharia();
   }
 });
 
-function resetarPlacar() {
-  golsA = 0;
-  golsB = 0;
-}
+document.getElementById('btnZerarStats').addEventListener('click', () => {
+  if (confirm('Zerar jogos e vitórias de todos? Os gols da artilharia serão mantidos.')) {
+    const zerar = j => { j.jogos = 0; j.vitorias = 0; return j; };
+    timeA = timeA.map(zerar);
+    timeB = timeB.map(zerar);
+    fila  = fila.map(zerar);
+    salvarEstado();
+    renderTudo();
+  }
+});
 
 // =============================================
 // DELEGAÇÃO DE EVENTOS
 // =============================================
 
 document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('btn-gol')) {
+  if (e.target.classList.contains('btn-gol'))
     adicionarGol(e.target.dataset.time, parseInt(e.target.dataset.idx));
-  }
-  if (e.target.classList.contains('btn-sair')) {
+  if (e.target.classList.contains('btn-rmgol'))
+    removerGol(e.target.dataset.time, parseInt(e.target.dataset.idx));
+  if (e.target.classList.contains('btn-sair'))
     sairTime(e.target.dataset.time, parseInt(e.target.dataset.idx));
-  }
 });
 
 // =============================================
@@ -404,16 +342,16 @@ window.addEventListener('DOMContentLoaded', () => {
 // CRONÔMETRO
 // =============================================
 
-(function() {
-  const TEMPO_TOTAL = 7 * 60; // 7 minutos em segundos
-  let segundosRestantes = TEMPO_TOTAL;
+(function () {
+  const TEMPO_TOTAL = 7 * 60;
+  let segundos = TEMPO_TOTAL;
   let intervalo = null;
   let rodando = false;
 
-  const display  = document.getElementById('cronoDisplay');
-  const btnIni   = document.getElementById('cronoBtnIniciar');
-  const btnPau   = document.getElementById('cronoBtnPausar');
-  const btnRes   = document.getElementById('cronoBtnReset');
+  const display = document.getElementById('cronoDisplay');
+  const btnIni  = document.getElementById('cronoBtnIniciar');
+  const btnPau  = document.getElementById('cronoBtnPausar');
+  const btnRes  = document.getElementById('cronoBtnReset');
 
   function formatar(s) {
     const m = Math.floor(s / 60);
@@ -422,41 +360,39 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function atualizar() {
-    display.textContent = formatar(segundosRestantes);
-    display.classList.toggle('urgente', segundosRestantes <= 60 && segundosRestantes > 0);
+    display.textContent = formatar(segundos);
+    display.classList.toggle('urgente', segundos <= 60 && segundos > 0);
   }
 
   function iniciar() {
-    if (rodando || segundosRestantes <= 0) return;
+    if (rodando || segundos <= 0) return;
     rodando = true;
     btnIni.disabled = true;
     btnPau.disabled = false;
-
     intervalo = setInterval(() => {
-      segundosRestantes--;
+      segundos--;
       atualizar();
-
-      if (segundosRestantes <= 0) {
+      if (segundos <= 0) {
         clearInterval(intervalo);
         rodando = false;
         btnIni.disabled = true;
         btnPau.disabled = true;
-        display.textContent = '0:00';
         display.classList.add('urgente');
-        // Beep via Web Audio API
+        // Beep
         try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
           [0, 0.3, 0.6].forEach(t => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-            osc.connect(gain); gain.connect(ctx.destination);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
             osc.frequency.value = 880;
             gain.gain.setValueAtTime(0.4, ctx.currentTime + t);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.25);
             osc.start(ctx.currentTime + t);
             osc.stop(ctx.currentTime + t + 0.25);
           });
-        } catch(e) {}
+        } catch (e) {}
       }
     }, 1000);
   }
@@ -472,7 +408,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function reiniciar() {
     clearInterval(intervalo);
     rodando = false;
-    segundosRestantes = TEMPO_TOTAL;
+    segundos = TEMPO_TOTAL;
     btnIni.disabled = false;
     btnPau.disabled = true;
     display.classList.remove('urgente');

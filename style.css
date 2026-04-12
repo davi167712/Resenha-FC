@@ -312,7 +312,7 @@ body {
   font-size: 1.8rem;
   padding: 6px;
   text-align: center;
-
+ 
 }
 .input-num::-webkit-inner-spin-button,
 .input-num::-webkit-outer-spin-button { -webkit-appearance: none; }
@@ -620,7 +620,7 @@ body {
   font-weight: 600;
   white-space: nowrap;
 }
-
+ 
 .stat-badge {
   font-size: .72rem;
   background: rgba(255,255,255,.05);
@@ -631,13 +631,13 @@ body {
   font-weight: 600;
   white-space: nowrap;
 }
-
+ 
 .stat-badge.stat-vit {
   background: rgba(255,214,0,.07);
   border-color: rgba(255,214,0,.15);
   color: rgba(255,214,0,.7);
 }
-
+ 
 .fila-nome {
   font-weight: 600;
   color: inherit;
@@ -832,7 +832,7 @@ body {
   gap: 16px;
   flex-wrap: wrap;
 }
-
+ 
 .crono-display {
   font-family: 'Anton', 'Bebas Neue', monospace;
   font-size: 2.8rem;
@@ -842,23 +842,23 @@ body {
   text-align: center;
   transition: color .2s;
 }
-
+ 
 .crono-display.urgente {
   color: var(--vermelho);
   animation: piscar .6s ease infinite alternate;
 }
-
+ 
 @keyframes piscar {
   from { opacity: 1; }
   to   { opacity: .4; }
 }
-
+ 
 .crono-btns {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
-
+ 
 .crono-btn {
   border: none;
   border-radius: 8px;
@@ -875,7 +875,108 @@ body {
   pointer-events: none;
 }
 .crono-btn:not(:disabled):hover { filter: brightness(1.15); transform: scale(1.04); }
-
+ 
 .crono-iniciar { background: var(--verde); color: #003d1a; }
 .crono-pausar  { background: var(--amarelo); color: #3d2e00; }
 .crono-reset   { background: var(--surface-3); color: var(--txt-2); border: 1px solid var(--borda); }
+ 
+.btn-orange {
+  background: #ff6d00;
+  color: #fff;
+}
+.btn-orange:hover { filter: brightness(1.15); }
+ 
+.btn-rmgol {
+  background: transparent;
+  color: var(--vermelho);
+  border: 1px solid rgba(255,23,68,.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800;
+  font-size: .8rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+}
+.btn-rmgol:hover:not(:disabled) { background: var(--vermelho); color: #fff; border-color: var(--vermelho); }
+.btn-rmgol:disabled { opacity: .25; cursor: default; }
+
+/* ==========================================
+   RESPONSIVIDADE MOBILE — adicionado
+   ========================================== */
+
+/* Celular pequeno (até 480px) */
+@media (max-width: 480px) {
+  .container { padding: 20px 12px 40px; }
+
+  /* Hero menor */
+  .hero { margin-bottom: 24px; }
+  .hero-title { font-size: clamp(2.8rem, 16vw, 4rem); }
+  .hero-sub { font-size: .88rem; }
+
+  /* Form: 1 coluna */
+  .form-wrapper { grid-template-columns: 1fr; gap: 14px; }
+  .textarea { min-height: 200px; font-size: .95rem; }
+
+  /* Botões de ação maiores para toque */
+  .action-btn { padding: 16px 14px; }
+  .action-icon { font-size: 1.5rem; }
+
+  /* Placar compacto */
+  .placar-header { padding: 12px 10px; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .placar-num { font-size: clamp(2.5rem, 14vw, 3.5rem); min-width: 70px; padding: 4px 14px; }
+  .time-nome { font-size: 1.1rem; }
+
+  /* Botões de resultado empilhados */
+  .resultado-btns { flex-direction: column; align-items: stretch; gap: 8px; }
+  .btn-venceu, .btn-empate { width: 100%; justify-content: center; font-size: 1rem; padding: 14px; }
+
+  /* Times: 1 coluna */
+  .times-grid { grid-template-columns: 1fr; }
+
+  /* Jogador item: reorganiza botões */
+  .jogador-item { flex-wrap: wrap; gap: 6px; padding: 10px; }
+  .jogador-nome { font-size: .9rem; min-width: 100%; flex: unset; }
+  .gols-badge, .stat-badge { font-size: .7rem; }
+  .btn-gol, .btn-rmgol, .btn-sair { font-size: .82rem; padding: 7px 12px; flex: 1; justify-content: center; text-align: center; }
+
+  /* Fila e artilharia */
+  .fila-card, .artilharia-card { padding: 14px; }
+  .fila-lista { gap: 6px; }
+  .fila-jogador { font-size: .82rem; padding: 5px 10px; }
+
+  /* Artilharia */
+  .artilharia-item { padding: 8px 10px; gap: 8px; }
+  .art-nome { font-size: .85rem; }
+  .art-gols { font-size: .78rem; padding: 2px 8px; }
+
+  /* Rodapé */
+  .rodape-btns { flex-direction: column; align-items: stretch; }
+  .rodape-btns .btn { justify-content: center; width: 100%; }
+
+  /* Cronômetro */
+  .crono-card { flex-direction: column; align-items: center; gap: 12px; padding: 14px; }
+  .crono-display { font-size: 3rem; }
+  .crono-btns { justify-content: center; }
+  .crono-btn { padding: 10px 22px; font-size: .9rem; }
+
+  /* Num control */
+  .num-control { gap: 8px; }
+  .num-btn { width: 44px; height: 44px; font-size: 1.5rem; }
+  .input-num { font-size: 2rem; }
+}
+
+/* Tablet (481px - 680px) */
+@media (min-width: 481px) and (max-width: 680px) {
+  .form-wrapper { grid-template-columns: 1fr; }
+  .times-grid { grid-template-columns: 1fr 1fr; }
+  .resultado-btns { gap: 8px; }
+  .btn-venceu { font-size: .88rem; padding: 11px 16px; }
+  .jogador-item { flex-wrap: wrap; }
+  .jogador-nome { min-width: 80px; }
+  .btn-gol, .btn-rmgol, .btn-sair { font-size: .78rem; padding: 5px 9px; }
+}
+
+/* alias para compatibilidade */
+.bg-field { display: none; }
