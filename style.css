@@ -433,7 +433,7 @@ body {
  
 .time-nome {
   font-family: 'Anton', sans-serif;
-  font-size: clamp(1.3rem, 4vw, 2rem);
+  font-size: clamp(.9rem, 2.5vw, 1.5rem);
   letter-spacing: .06em;
   position: relative;
 }
