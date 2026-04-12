@@ -41,11 +41,11 @@
       <div class="crono-btns">
         <button class="crono-btn crono-iniciar" id="cronoBtnIniciar">▶ Iniciar</button>
         <button class="crono-btn crono-pausar" id="cronoBtnPausar" disabled>⏸ Pausar</button>
-        <button class="crono-btn crono-reset" id="cronoBtnReset">↺ Reiniciar</button>
+        <button class="crono-btn crono-reset"  id="cronoBtnReset">↺ Reiniciar</button>
       </div>
     </div>
 
-        <!-- Times -->
+    <!-- Times -->
     <div class="times-grid">
       <div class="time-card time-a">
         <div class="time-title time-a-cor">⚡ TIME A</div>
@@ -64,7 +64,7 @@
       <div id="filaVazia" class="fila-vazia hidden">Nenhum jogador na fila</div>
     </div>
 
-    <!-- 🏅 Artilharia — histórico acumulado -->
+    <!-- Artilharia -->
     <div class="artilharia-card">
       <div class="artilharia-header">
         <div class="artilharia-title">🏅 Artilharia Geral</div>
@@ -75,8 +75,9 @@
 
     <!-- Rodapé -->
     <div class="rodape-btns">
-      <button class="btn btn-gray" id="btnReset">🔄 Resetar Placar</button>
-      <button class="btn btn-red" id="btnLimparHistorico">🗑️ Limpar Histórico</button>
+      <button class="btn btn-gray"    id="btnReset">🔄 Resetar Placar</button>
+      <button class="btn btn-gray"    id="btnZerarStats">📊 Zerar Stats</button>
+      <button class="btn btn-red"     id="btnLimparHistorico">🗑️ Limpar Histórico</button>
       <a href="index.html" class="btn btn-outline" id="btnVoltar">← Nova Pelada</a>
     </div>
 
@@ -84,8 +85,6 @@
 
   <script src="jogo.js"></script>
   <script>
-    // Ao clicar em "Nova Pelada", limpa o estado do jogo atual
-    // mas MANTÉM o histórico de gols acumulados
     document.getElementById('btnVoltar').addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.removeItem('pelada_estado');
