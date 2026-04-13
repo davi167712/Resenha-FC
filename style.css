@@ -980,3 +980,49 @@ body {
 
 /* alias para compatibilidade */
 .bg-field { display: none; }
+/* ==========================================
+   CONFIG ROWS (tela 1)
+   ========================================== */
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.config-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--txt-2);
+  flex: 1;
+}
+
+.num-control-sm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.input-num-sm {
+  width: 52px;
+  background: var(--fundo);
+  border: 1.5px solid var(--borda);
+  border-radius: var(--radius-sm);
+  color: var(--txt-1);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.3rem;
+  padding: 4px 2px;
+  text-align: center;
+
+}
+.input-num-sm::-webkit-inner-spin-button,
+.input-num-sm::-webkit-outer-spin-button { -webkit-appearance: none; }
+.input-num-sm:focus { outline: none; border-color: var(--verde); }
+
+.config-divider {
+  height: 1px;
+  background: var(--borda);
+  margin: 10px 0;
+}

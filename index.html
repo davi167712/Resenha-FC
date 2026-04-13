@@ -48,16 +48,41 @@
       <div class="form-col form-col-side">
  
         <div class="side-block">
-          <div class="field-header">
-            <span class="field-icon">🏃</span>
-            <label class="field-label" for="porTime">Por time</label>
+
+          <!-- Jogadores por time -->
+          <div class="config-row">
+            <label class="config-label" for="porTime">👥 Jogadores por time</label>
+            <div class="num-control-sm">
+              <button class="num-btn" id="numMenos">−</button>
+              <input type="number" id="porTime" class="input-num-sm" value="4" min="1" max="20"/>
+              <button class="num-btn" id="numMais">+</button>
+            </div>
           </div>
-          <div class="num-control">
-            <button class="num-btn" id="numMenos">−</button>
-            <input type="number" id="porTime" class="input-num" value="4" min="1" max="20"/>
-            <button class="num-btn" id="numMais">+</button>
+
+          <div class="config-divider"></div>
+
+          <!-- Vitórias para saída direta -->
+          <div class="config-row">
+            <label class="config-label" for="vitoriasSaida">🏆 Vitórias p/ saída direta</label>
+            <div class="num-control-sm">
+              <button class="num-btn" id="vitMenos">−</button>
+              <input type="number" id="vitoriasSaida" class="input-num-sm" value="3" min="1" max="20"/>
+              <button class="num-btn" id="vitMais">+</button>
+            </div>
           </div>
-          <p class="num-hint" id="numHint">Times de 4 jogadores</p>
+
+          <div class="config-divider"></div>
+
+          <!-- Tempo em minutos -->
+          <div class="config-row">
+            <label class="config-label" for="tempoJogo">⏱️ Tempo (minutos)</label>
+            <div class="num-control-sm">
+              <button class="num-btn" id="tempoMenos">−</button>
+              <input type="number" id="tempoJogo" class="input-num-sm" value="7" min="1" max="60"/>
+              <button class="num-btn" id="tempoMais">+</button>
+            </div>
+          </div>
+
         </div>
  
         <div class="side-actions">

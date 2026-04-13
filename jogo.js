@@ -9,6 +9,8 @@ let fila    = [];
 let golsA   = 0;
 let golsB   = 0;
 let porTime = 5;
+let vitoriasSaida = 3;
+let tempoJogo = 7;
 let historico = {};
 
 // =============================================
@@ -52,7 +54,9 @@ function migrarJogador(j) {
 
 function carregarDados() {
   carregarHistorico();
-  porTime = parseInt(localStorage.getItem('pelada_porTime') || '5');
+  porTime       = parseInt(localStorage.getItem('pelada_porTime')       || '5');
+  vitoriasSaida = parseInt(localStorage.getItem('pelada_vitoriasSaida') || '3');
+  tempoJogo     = parseInt(localStorage.getItem('pelada_tempoJogo')     || '7');
 
   const estadoSalvo = localStorage.getItem('pelada_estado');
   if (estadoSalvo) {
@@ -346,7 +350,7 @@ window.addEventListener('DOMContentLoaded', () => {
 // =============================================
 
 (function () {
-  const TEMPO_TOTAL = 7 * 60;
+  const TEMPO_TOTAL = (parseInt(localStorage.getItem('pelada_tempoJogo')) || 7) * 60;
   let segundos = TEMPO_TOTAL;
   let intervalo = null;
   let rodando = false;
