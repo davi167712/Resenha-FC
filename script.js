@@ -6,7 +6,6 @@
 const txtNomes    = document.getElementById('nomes');
 const inputPor    = document.getElementById('porTime');
 const btnEmb      = document.getElementById('btnEmbaralhar');
-const btnOrdem    = document.getElementById('btnOrdem');
 const btnLimpar   = document.getElementById('btnLimpar');
 const msgErro     = document.getElementById('msgErro');
  
@@ -60,12 +59,6 @@ function iniciarJogo(nomes) {
 // Embaralha e começa
 btnEmb.addEventListener('click', () => {
   const nomes = embaralhar(lerNomes());
-  iniciarJogo(nomes);
-});
- 
-// Segue a ordem digitada
-btnOrdem.addEventListener('click', () => {
-  const nomes = lerNomes();
   iniciarJogo(nomes);
 });
  

@@ -254,6 +254,7 @@ document.getElementById('venceuA').addEventListener('click', () => {
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
   timeA.forEach(j => j.gols = 0);
   resetarPlacar();
+  if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
   renderTudo();
 });
@@ -267,6 +268,7 @@ document.getElementById('venceuB').addEventListener('click', () => {
   while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   timeB.forEach(j => j.gols = 0);
   resetarPlacar();
+  if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
   renderTudo();
 });
@@ -285,6 +287,7 @@ document.getElementById('empate').addEventListener('click', () => {
   while (timeB.length < porTime && pi < pool.length) timeB.push(pool[pi++]);
   while (pi < pool.length) fila.push(pool[pi++]);
   resetarPlacar();
+  if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
   renderTudo();
 });
@@ -418,6 +421,7 @@ window.addEventListener('DOMContentLoaded', () => {
   btnIni.addEventListener('click', iniciar);
   btnPau.addEventListener('click', pausar);
   btnRes.addEventListener('click', reiniciar);
+  window.reiniciarCrono = reiniciar;
 
   atualizar();
 })();
