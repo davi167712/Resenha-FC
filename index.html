@@ -92,43 +92,5 @@
  
   </div>
  
-  <script src="script.js"></script>
-  <script>
-    // Contador de jogadores em tempo real
-    const txtNomes = document.getElementById('nomes');
-    const contador = document.getElementById('contador');
-    const numHint  = document.getElementById('numHint');
-    const porTime  = document.getElementById('porTime');
-    const numMenos = document.getElementById('numMenos');
-    const numMais  = document.getElementById('numMais');
- 
-    function atualizarContador() {
-      const nomes = txtNomes.value.split('\n').map(n => n.trim()).filter(n => n.length > 0);
-      const n = nomes.length;
-      contador.textContent = n === 0 ? 'nenhum jogador' : n === 1 ? '1 jogador' : `${n} jogadores`;
-      contador.classList.toggle('contador-ok', n >= 2);
-    }
- 
-    function atualizarHint() {
-      const v = parseInt(porTime.value) || 5;
-      numHint.textContent = `Times de ${v} jogador${v !== 1 ? 'es' : ''}`;
-    }
- 
-    txtNomes.addEventListener('input', atualizarContador);
-    porTime.addEventListener('input', atualizarHint);
- 
-    numMenos.addEventListener('click', () => {
-      const v = parseInt(porTime.value) || 5;
-      if (v > 1) { porTime.value = v - 1; atualizarHint(); }
-    });
-    numMais.addEventListener('click', () => {
-      const v = parseInt(porTime.value) || 5;
-      if (v < 20) { porTime.value = v + 1; atualizarHint(); }
-    });
- 
-    // Restaura porTime salvo
-    const por = localStorage.getItem('pelada_porTime');
-    if (por) { porTime.value = por; atualizarHint(); }
-  </script>
-</body>
+  <script src="script.js"></script></body>
 </html>
