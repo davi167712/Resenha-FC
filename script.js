@@ -79,6 +79,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // ---- Botões ----
   btnEmb.addEventListener('click', () => iniciarJogo(embaralhar(lerNomes())));
 
+  const btnOrdem = document.getElementById('btnOrdem');
+  if (btnOrdem) btnOrdem.addEventListener('click', () => iniciarJogo(lerNomes()));
+
   btnLimpar.addEventListener('click', () => {
     txtNomes.value = '';
     atualizarContador();

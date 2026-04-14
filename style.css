@@ -1075,3 +1075,12 @@ body {
   vertical-align: middle;
   letter-spacing: .02em;
 }
+/* ---- Botão Na Ordem ---- */
+.action-ordem {
+  background: linear-gradient(135deg, #1565c0, #2979ff);
+  border: 1.5px solid rgba(41,121,255,.4);
+}
+.action-ordem:hover {
+  background: linear-gradient(135deg, #1976d2, #448aff);
+  border-color: rgba(41,121,255,.7);
+}
