@@ -166,6 +166,9 @@ function renderFila() {
       <span class="fila-nome">${j.nome}</span>
       <span class="stat-badge">🎮 ${j.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${j.vitorias}v</span>
+      <span class="gols-badge">⚽ ${j.gols || 0}</span>
+      <button class="btn-gol-fila" data-idx="${idx}">+ GOL</button>
+      <button class="btn-rmgol-fila" data-idx="${idx}" ${(j.gols||0)===0?"disabled":""}>− GOL</button>
       <button class="btn-sair-fila" data-idx="${idx}">SAIR</button>
     `;
     lista.appendChild(li);
@@ -256,10 +259,25 @@ function sairTime(qual, idx) {
 }
 
 function sairFila(idx) {
-  // Remove jogador da fila de espera (sai da pelada)
   fila.splice(idx, 1);
   salvarEstado();
   renderTudo();
+}
+
+function adicionarGolFila(idx) {
+  fila[idx].gols = (fila[idx].gols || 0) + 1;
+  historico[fila[idx].nome] = (historico[fila[idx].nome] || 0) + 1;
+  salvarEstado();
+  renderTudo();
+}
+
+function removerGolFila(idx) {
+  if (fila[idx].gols > 0) {
+    fila[idx].gols--;
+    if (historico[fila[idx].nome] > 0) historico[fila[idx].nome]--;
+    salvarEstado();
+    renderTudo();
+  }
 }
 
 function resetarPlacar() {
@@ -392,6 +410,10 @@ document.addEventListener('click', (e) => {
     sairTime(e.target.dataset.time, parseInt(e.target.dataset.idx));
   if (e.target.classList.contains('btn-sair-fila'))
     sairFila(parseInt(e.target.dataset.idx));
+  if (e.target.classList.contains('btn-gol-fila'))
+    adicionarGolFila(parseInt(e.target.dataset.idx));
+  if (e.target.classList.contains('btn-rmgol-fila'))
+    removerGolFila(parseInt(e.target.dataset.idx));
 });
 
 // =============================================
