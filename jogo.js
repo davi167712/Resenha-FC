@@ -10,6 +10,86 @@ let golsA   = 0;
 let golsB   = 0;
 let porTime = 5;
 let vitoriasSaida = 3;
+
+// =============================================
+// ENGINE DE SONS
+// =============================================
+const Sons = (() => {
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    return ctx;
+  }
+
+  function beep({ freq = 440, dur = 0.2, vol = 0.4, type = 'sine', delay = 0 } = {}) {
+    try {
+      const c = getCtx();
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain); gain.connect(c.destination);
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(vol, c.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + dur);
+      osc.start(c.currentTime + delay);
+      osc.stop(c.currentTime + delay + dur);
+    } catch(e) {}
+  }
+
+  return {
+    // Apito longo ao acabar o tempo
+    apito() {
+      beep({ freq: 900, dur: 0.6, vol: 0.5, type: 'square' });
+      beep({ freq: 900, dur: 0.6, vol: 0.5, type: 'square', delay: 0.7 });
+      beep({ freq: 900, dur: 1.0, vol: 0.5, type: 'square', delay: 1.4 });
+    },
+    // Bip curto nos últimos 5 segundos
+    bipContagem() {
+      beep({ freq: 660, dur: 0.08, vol: 0.3, type: 'square' });
+    },
+    // Som urgente nos últimos 30s (bip suave)
+    bipUrgente() {
+      beep({ freq: 520, dur: 0.06, vol: 0.15, type: 'sine' });
+    },
+    // Gol — torcida simulada com ruído crescente
+    gol() {
+      try {
+        const c = getCtx();
+        // Acorde de vitória
+        [523, 659, 784, 1047].forEach((f, i) => {
+          const osc = c.createOscillator();
+          const gain = c.createGain();
+          osc.connect(gain); gain.connect(c.destination);
+          osc.frequency.value = f;
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0, c.currentTime + i * 0.05);
+          gain.gain.linearRampToValueAtTime(0.3, c.currentTime + i * 0.05 + 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.05 + 0.6);
+          osc.start(c.currentTime + i * 0.05);
+          osc.stop(c.currentTime + i * 0.05 + 0.7);
+        });
+      } catch(e) {}
+    },
+    // Vitória
+    vitoria() {
+      [523, 659, 784, 1047, 1319].forEach((f, i) => {
+        beep({ freq: f, dur: 0.18, vol: 0.35, type: 'sine', delay: i * 0.12 });
+      });
+    },
+    // Empate — som neutro descendente
+    empate() {
+      beep({ freq: 600, dur: 0.2, vol: 0.3, type: 'sine' });
+      beep({ freq: 450, dur: 0.2, vol: 0.3, type: 'sine', delay: 0.22 });
+    },
+    // Troca de jogador
+    troca() {
+      beep({ freq: 400, dur: 0.08, vol: 0.2, type: 'sine' });
+      beep({ freq: 500, dur: 0.08, vol: 0.2, type: 'sine', delay: 0.1 });
+    }
+  };
+})();
+
+
 let tempoJogo = 7;
 let historico = {};
 
@@ -227,6 +307,7 @@ function renderArtilharia() {
 // =============================================
 
 function adicionarGol(qual, idx) {
+  Sons.gol();
   const time = qual === 'A' ? timeA : timeB;
   time[idx].gols++;
   if (qual === 'A') golsA++; else golsB++;
@@ -247,6 +328,7 @@ function removerGol(qual, idx) {
 }
 
 function sairTime(qual, idx) {
+  Sons.troca();
   const time = qual === 'A' ? timeA : timeB;
   const removido = time.splice(idx, 1)[0];
   removido.gols = 0;
@@ -259,12 +341,14 @@ function sairTime(qual, idx) {
 }
 
 function sairFila(idx) {
+  Sons.troca();
   fila.splice(idx, 1);
   salvarEstado();
   renderTudo();
 }
 
 function adicionarGolFila(idx) {
+  Sons.gol();
   fila[idx].gols = (fila[idx].gols || 0) + 1;
   historico[fila[idx].nome] = (historico[fila[idx].nome] || 0) + 1;
   salvarEstado();
@@ -313,6 +397,7 @@ function atualizarBotoesPlacar() {
 // =============================================
 
 document.getElementById('venceuA').addEventListener('click', () => {
+  Sons.vitoria();
   contarJogos(timeA);
   contarJogos(timeB);
   contarVitorias(timeA);
@@ -343,6 +428,7 @@ document.getElementById('venceuA').addEventListener('click', () => {
 });
 
 document.getElementById('venceuB').addEventListener('click', () => {
+  Sons.vitoria();
   contarJogos(timeA);
   contarJogos(timeB);
   contarVitorias(timeB);
@@ -373,6 +459,7 @@ document.getElementById('venceuB').addEventListener('click', () => {
 });
 
 document.getElementById('empate').addEventListener('click', () => {
+  Sons.empate();
   contarJogos(timeA);
   contarJogos(timeB);
   // Empate zera contadores de vitórias dos 2 times
@@ -473,7 +560,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function atualizar() {
     display.textContent = formatar(segundos);
-    display.classList.toggle('urgente', segundos <= 60 && segundos > 0);
+    display.classList.toggle('urgente', segundos <= 30 && segundos > 0);
+    if (rodando && segundos <= 5 && segundos > 0) Sons.bipContagem();
+    else if (rodando && segundos <= 30 && segundos > 0 && segundos % 10 === 0) Sons.bipUrgente();
   }
 
   function iniciar() {
@@ -490,21 +579,8 @@ window.addEventListener('DOMContentLoaded', () => {
         btnIni.disabled = true;
         btnPau.disabled = true;
         display.classList.add('urgente');
-        // Beep
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          [0, 0.3, 0.6].forEach(t => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.value = 880;
-            gain.gain.setValueAtTime(0.4, ctx.currentTime + t);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.25);
-            osc.start(ctx.currentTime + t);
-            osc.stop(ctx.currentTime + t + 0.25);
-          });
-        } catch (e) {}
+        Sons.apito();
+        if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 600]);
       }
     }, 1000);
   }
