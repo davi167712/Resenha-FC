@@ -92,6 +92,21 @@
 
   </div>
 
+  <!-- Modal de confirmação -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal-box">
+      <div id="modal-titulo"></div>
+      <div id="modal-mensagem"></div>
+      <div class="modal-btns">
+        <button id="modal-cancelar">Cancelar</button>
+        <button id="modal-confirmar">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas de confetes -->
+  <canvas id="confete-canvas"></canvas>
+
   <script src="jogo.js"></script>
   <script>
     document.getElementById('btnVoltar').addEventListener('click', (e) => {

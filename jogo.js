@@ -422,6 +422,7 @@ document.getElementById('venceuA').addEventListener('click', () => {
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
 
   salvarHistoricoPelada('Com Camisa', golsA, golsB, timeA, timeB);
+  lancarConfetes();
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
@@ -454,6 +455,7 @@ document.getElementById('venceuB').addEventListener('click', () => {
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
 
   salvarHistoricoPelada('Sem Camisa', golsA, golsB, timeA, timeB);
+  lancarConfetes();
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
@@ -492,24 +494,89 @@ document.getElementById('btnReset').addEventListener('click', () => {
 });
 
 document.getElementById('btnLimparHistorico').addEventListener('click', () => {
-  if (confirm('Apagar todo o histórico de gols? Isso não pode ser desfeito.')) {
-    historico = {};
-    localStorage.removeItem('pelada_historico');
-    renderArtilharia();
-  }
+  abrirModal(
+    '🗑️ Limpar Histórico',
+    'Apagar todo o histórico de gols? Isso não pode ser desfeito.',
+    () => {
+      historico = {};
+      localStorage.removeItem('pelada_historico');
+      renderArtilharia();
+    }
+  );
 });
 
 document.getElementById('btnZerarStats').addEventListener('click', () => {
-  if (confirm('Zerar jogos e vitórias de todos? Os gols da artilharia serão mantidos.')) {
-    vitTimeA = 0; vitTimeB = 0;
-    const zerar = j => { j.jogos = 0; j.vitorias = 0; return j; };
-    timeA = timeA.map(zerar);
-    timeB = timeB.map(zerar);
-    fila  = fila.map(zerar);
-    salvarEstado();
-    renderTudo();
-  }
+  abrirModal(
+    '📊 Zerar Stats',
+    'Zerar jogos e vitórias de todos? Os gols da artilharia serão mantidos.',
+    () => {
+      vitTimeA = 0; vitTimeB = 0;
+      const zerar = j => { j.jogos = 0; j.vitorias = 0; return j; };
+      timeA = timeA.map(zerar);
+      timeB = timeB.map(zerar);
+      fila  = fila.map(zerar);
+      salvarEstado();
+      renderTudo();
+    }
+  );
 });
+
+function abrirModal(titulo, mensagem, onConfirm) {
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  document.getElementById('modal-titulo').textContent = titulo;
+  document.getElementById('modal-mensagem').textContent = mensagem;
+  document.getElementById('modal-confirmar').onclick = () => {
+    fecharModal();
+    onConfirm();
+  };
+}
+
+function fecharModal() {
+  document.getElementById('modal-overlay').classList.add('hidden');
+}
+
+document.getElementById('modal-cancelar').addEventListener('click', fecharModal);
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modal-overlay') fecharModal();
+});
+
+function lancarConfetes() {
+  const canvas = document.getElementById('confete-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  const cores = ['#2ea043', '#FFD700', '#ffffff', '#41b8ff', '#ff6b35'];
+  const particulas = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -10,
+    w: Math.random() * 10 + 5,
+    h: Math.random() * 6 + 3,
+    cor: cores[Math.floor(Math.random() * cores.length)],
+    vel: Math.random() * 4 + 2,
+    ang: Math.random() * 360,
+    rot: Math.random() * 6 - 3,
+  }));
+
+  let frame = 0;
+  function animar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particulas.forEach(p => {
+      p.y += p.vel;
+      p.ang += p.rot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.ang * Math.PI) / 180);
+      ctx.fillStyle = p.cor;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 90) requestAnimationFrame(animar);
+    else canvas.style.display = 'none';
+  }
+  animar();
+}
 
 // =============================================
 // DELEGAÇÃO DE EVENTOS
