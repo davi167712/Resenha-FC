@@ -285,6 +285,29 @@ function resetarPlacar() {
   golsB = 0;
 }
 
+// Botões + e - do placar direto
+document.getElementById('maisA').addEventListener('click', () => {
+  golsA++;
+  renderPlacar();
+  atualizarBotoesPlacar();
+});
+document.getElementById('menosA').addEventListener('click', () => {
+  if (golsA > 0) { golsA--; renderPlacar(); atualizarBotoesPlacar(); }
+});
+document.getElementById('maisB').addEventListener('click', () => {
+  golsB++;
+  renderPlacar();
+  atualizarBotoesPlacar();
+});
+document.getElementById('menosB').addEventListener('click', () => {
+  if (golsB > 0) { golsB--; renderPlacar(); atualizarBotoesPlacar(); }
+});
+
+function atualizarBotoesPlacar() {
+  document.getElementById('menosA').disabled = golsA === 0;
+  document.getElementById('menosB').disabled = golsB === 0;
+}
+
 // =============================================
 // BOTÕES DE RESULTADO
 // =============================================
@@ -294,23 +317,24 @@ document.getElementById('venceuA').addEventListener('click', () => {
   contarJogos(timeB);
   contarVitorias(timeA);
 
-  // Time A venceu: incrementa contador de vitórias do time A, zera o do B
   vitTimeA++;
   vitTimeB = 0;
 
   // Time B perde e vai pra fila
   timeB.forEach(j => { j.gols = 0; fila.push(j); });
   timeB = [];
-  while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
   timeA.forEach(j => j.gols = 0);
 
-  // Saída direta: time A atingiu o limite de vitórias → time inteiro sai
+  // Se time A atingiu o limite de vitórias, ele também sai
   if (vitTimeA >= vitoriasSaida) {
     vitTimeA = 0;
     timeA.forEach(j => { j.gols = 0; fila.push(j); });
     timeA = [];
-    while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   }
+
+  // Agora repõe os times com quem está na fila
+  while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
+  while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
 
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
@@ -323,23 +347,24 @@ document.getElementById('venceuB').addEventListener('click', () => {
   contarJogos(timeB);
   contarVitorias(timeB);
 
-  // Time B venceu: incrementa contador de vitórias do time B, zera o do A
   vitTimeB++;
   vitTimeA = 0;
 
   // Time A perde e vai pra fila
   timeA.forEach(j => { j.gols = 0; fila.push(j); });
   timeA = [];
-  while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   timeB.forEach(j => j.gols = 0);
 
-  // Saída direta: time B atingiu o limite de vitórias → time inteiro sai
+  // Se time B atingiu o limite de vitórias, ele também sai
   if (vitTimeB >= vitoriasSaida) {
     vitTimeB = 0;
     timeB.forEach(j => { j.gols = 0; fila.push(j); });
     timeB = [];
-    while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
   }
+
+  // Agora repõe os times com quem está na fila
+  while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
+  while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
 
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
