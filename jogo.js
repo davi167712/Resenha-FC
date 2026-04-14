@@ -537,6 +537,10 @@ document.addEventListener('click', (e) => {
 window.addEventListener('DOMContentLoaded', () => {
   carregarDados();
   renderTudo();
+  // Pedir permissão de notificação logo ao abrir
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
 });
 
 // =============================================
@@ -583,6 +587,14 @@ window.addEventListener('DOMContentLoaded', () => {
         display.classList.add('urgente');
         Sons.apito();
         if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 600]);
+        // Notificação do navegador
+        if (Notification.permission === 'granted') {
+          new Notification('⚽ FUT DO IF', { body: 'O tempo acabou! Hora de definir o resultado.' });
+        } else if (Notification.permission !== 'denied') {
+          Notification.requestPermission().then(p => {
+            if (p === 'granted') new Notification('⚽ FUT DO IF', { body: 'O tempo acabou! Hora de definir o resultado.' });
+          });
+        }
       }
     }, 1000);
   }
@@ -807,8 +819,94 @@ function _gerarPDF() {
   doc.rect(margem, tY, util, hH + rowH * lista.length);
 
   // ══════════════════════════════════════
+  // GRÁFICO DE BARRAS — Gols por jogador
+  // ══════════════════════════════════════
+  const artTop = lista.filter(j => j.gols > 0).slice(0, 8);
+  if (artTop.length > 0) {
+    doc.addPage();
+
+    // Cabeçalho da nova página
+    doc.setFillColor(10, 10, 20);
+    doc.rect(0, 0, W, 25, 'F');
+    doc.setFillColor(46, 160, 67);
+    doc.rect(0, 0, 5, 25, 'F');
+    doc.setTextColor(46, 160, 67);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('FUT DO IF', 12, 11);
+    doc.setTextColor(200, 200, 200);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('Gráfico de Artilharia', 12, 19);
+
+    const gY = 35;
+    const gH = 100;
+    const gW = util;
+    const maxGols = Math.max(...artTop.map(j => j.gols));
+    const barW = (gW - (artTop.length - 1) * 4) / artTop.length;
+
+    // Título
+    doc.setTextColor(180, 180, 180);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('⚽ Artilharia — Gols por jogador', margem, gY - 4);
+
+    // Linhas guia horizontais
+    doc.setDrawColor(35, 35, 50);
+    doc.setLineWidth(0.2);
+    for (let g = 1; g <= maxGols; g++) {
+      const lineY = gY + gH - (g / maxGols) * gH;
+      doc.line(margem, lineY, margem + gW, lineY);
+      doc.setTextColor(80, 80, 80);
+      doc.setFontSize(6);
+      doc.text(String(g), margem - 4, lineY + 1, { align: 'right' });
+    }
+
+    artTop.forEach((j, i) => {
+      const bX = margem + i * (barW + 4);
+      const bH = (j.gols / maxGols) * gH;
+      const bY = gY + gH - bH;
+
+      // Cor: ouro pro 1º, prata pro 2º, bronze pro 3º, verde pros demais
+      const cor = i === 0 ? [255, 200, 0] : i === 1 ? [190, 190, 190] : i === 2 ? [180, 110, 60] : [46, 160, 67];
+
+      // Fundo escuro da barra
+      doc.setFillColor(20, 20, 35);
+      doc.roundedRect(bX, gY, barW, gH, 1, 1, 'F');
+
+      // Barra colorida
+      doc.setFillColor(...cor);
+      doc.roundedRect(bX, bY, barW, bH, 1, 1, 'F');
+
+      // Valor em cima da barra
+      doc.setTextColor(...cor);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.text(String(j.gols), bX + barW / 2, bY - 2, { align: 'center' });
+
+      // Nome embaixo
+      doc.setTextColor(160, 160, 160);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      const nomeCorto = j.nome.length > 8 ? j.nome.slice(0, 7) + '.' : j.nome;
+      doc.text(nomeCorto, bX + barW / 2, gY + gH + 5, { align: 'center' });
+    });
+
+    // Rodapé página 2
+    doc.setFillColor(10, 10, 20);
+    doc.rect(0, 283, W, 14, 'F');
+    doc.setFillColor(46, 160, 67);
+    doc.rect(0, 283, 5, 14, 'F');
+    doc.setTextColor(80, 80, 80);
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Fut do IF © Relatório', W / 2, 291, { align: 'center' });
+  }
+
+  // ══════════════════════════════════════
   // RODAPÉ
   // ══════════════════════════════════════
+  doc.setPage(1);
   doc.setFillColor(10, 10, 20);
   doc.rect(0, 283, W, 14, 'F');
   doc.setFillColor(46, 160, 67);

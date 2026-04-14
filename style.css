@@ -467,9 +467,10 @@ body {
 }
  
 @keyframes pulse-num {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.18); }
-  100% { transform: scale(1); }
+  0%   { transform: scale(1);    color: inherit; text-shadow: none; }
+  20%  { transform: scale(1.35); color: #2ea043;  text-shadow: 0 0 18px #2ea04388; }
+  60%  { transform: scale(1.2);  color: #2ea043;  text-shadow: 0 0 10px #2ea04344; }
+  100% { transform: scale(1);    color: inherit; text-shadow: none; }
 }
  
 /* --- Botões resultado --- */
