@@ -1026,3 +1026,7 @@ body {
   background: var(--borda);
   margin: 10px 0;
 }
+.autor:hover {
+  opacity: 1;
+  cursor: default;
+}
