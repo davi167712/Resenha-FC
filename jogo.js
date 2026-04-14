@@ -694,7 +694,6 @@ function _gerarPDF() {
   const cards = [
     { label: 'Total de Gols',    valor: totalGols,     cor: [46, 160, 67]  },
     { label: 'Partidas jogadas', valor: Math.round(totalJogos / (lista.length || 1)), cor: [41, 121, 255] },
-    { label: 'Total Vitórias',   valor: totalVitorias, cor: [255, 160, 0]  },
   ];
 
   cards.forEach((c, i) => {
