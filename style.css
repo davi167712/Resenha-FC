@@ -1026,7 +1026,11 @@ body {
   background: var(--borda);
   margin: 10px 0;
 }
-.autor:hover {
-  opacity: 1;
-  cursor: default;
+.autor {
+  position: fixed;
+  bottom: 10px;
+  right: 15px;
+  font-size: 12px;
+  color: #aaa;
+  opacity: 0.7;
 }
