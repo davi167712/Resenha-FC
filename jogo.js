@@ -6,6 +6,7 @@
 let timeA   = [];
 let timeB   = [];
 let fila    = [];
+let banco   = [];  // jogadores inativos (saíram voluntariamente)
 let golsA   = 0;
 let golsB   = 0;
 let porTime = 5;
@@ -102,7 +103,7 @@ let vitTimeB = 0;
 // =============================================
 
 function salvarEstado() {
-  localStorage.setItem('pelada_estado',    JSON.stringify({ timeA, timeB, fila, golsA, golsB, vitTimeA, vitTimeB }));
+  localStorage.setItem('pelada_estado',    JSON.stringify({ timeA, timeB, fila, banco, golsA, golsB, vitTimeA, vitTimeB }));
   localStorage.setItem('pelada_historico', JSON.stringify(historico));
 }
 
@@ -148,6 +149,7 @@ function carregarDados() {
     timeA    = (e.timeA || []).map(migrarJogador);
     timeB    = (e.timeB || []).map(migrarJogador);
     fila     = (e.fila  || []).map(migrarJogador);
+    banco    = (e.banco || []).map(migrarJogador);
     golsA    = e.golsA    || 0;
     golsB    = e.golsB    || 0;
     vitTimeA = e.vitTimeA || 0;
@@ -193,6 +195,33 @@ function renderTudo() {
   renderPlacar();
   renderArtilharia();
   renderVitoriasTimes();
+  renderBanco();
+}
+
+function renderBanco() {
+  const lista = document.getElementById('bancoLista');
+  const vazio = document.getElementById('bancoVazio');
+  if (!lista) return;
+  lista.innerHTML = '';
+
+  if (banco.length === 0) {
+    vazio.style.display = 'block';
+    return;
+  }
+  vazio.style.display = 'none';
+
+  banco.forEach((j, idx) => {
+    const li = document.createElement('li');
+    li.className = 'fila-jogador banco-jogador';
+    li.innerHTML = `
+      <span class="fila-nome">${j.nome}</span>
+      <span class="stat-badge">🎮 ${j.jogos}j</span>
+      <span class="stat-badge stat-vit">🏆 ${j.vitorias}v</span>
+      <button class="btn-voltar-banco" data-idx="${idx}">↩ VOLTAR</button>
+      <button class="btn-apagar-banco" data-idx="${idx}">🗑 APAGAR</button>
+    `;
+    lista.appendChild(li);
+  });
 }
 
 function renderVitoriasTimes() {
@@ -216,7 +245,8 @@ function renderTime(idLista, time, qual) {
     li.className = 'jogador-item';
     li.innerHTML = `
       <span class="jogador-nome">${jogador.nome}</span>
-      <span class="gols-badge">⚽ ${jogador.gols}</span>
+      <span class="gols-badge" title="Gols na partida">⚽ ${jogador.gols}</span>
+      <span class="stat-badge gols-total-badge" title="Total de gols">🌟 ${historico[jogador.nome]||0}</span>
       <span class="stat-badge">🎮 ${jogador.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${jogador.vitorias}v</span>
       <button class="btn-gol"   data-time="${qual}" data-idx="${idx}">+ GOL</button>
@@ -332,7 +362,8 @@ function sairTime(qual, idx) {
   const time = qual === 'A' ? timeA : timeB;
   const removido = time.splice(idx, 1)[0];
   removido.gols = 0;
-  // Jogador sai da pelada completamente (não vai para a fila)
+  // Jogador vai para o banco de inativos
+  banco.push(removido);
   if (fila.length > 0) {
     time.push(fila.shift());
   }
@@ -342,7 +373,22 @@ function sairTime(qual, idx) {
 
 function sairFila(idx) {
   Sons.troca();
-  fila.splice(idx, 1);
+  const removido = fila.splice(idx, 1)[0];
+  removido.gols = 0;
+  banco.push(removido);
+  salvarEstado();
+  renderTudo();
+}
+
+function voltarBanco(idx) {
+  const j = banco.splice(idx, 1)[0];
+  fila.push(j);
+  salvarEstado();
+  renderTudo();
+}
+
+function apagarBanco(idx) {
+  banco.splice(idx, 1);
   salvarEstado();
   renderTudo();
 }
@@ -591,6 +637,10 @@ document.addEventListener('click', (e) => {
     sairTime(e.target.dataset.time, parseInt(e.target.dataset.idx));
   if (e.target.classList.contains('btn-sair-fila'))
     sairFila(parseInt(e.target.dataset.idx));
+  if (e.target.classList.contains('btn-voltar-banco'))
+    voltarBanco(parseInt(e.target.dataset.idx));
+  if (e.target.classList.contains('btn-apagar-banco'))
+    apagarBanco(parseInt(e.target.dataset.idx));
   if (e.target.classList.contains('btn-gol-fila'))
     adicionarGolFila(parseInt(e.target.dataset.idx));
   if (e.target.classList.contains('btn-rmgol-fila'))
@@ -604,6 +654,21 @@ document.addEventListener('click', (e) => {
 window.addEventListener('DOMContentLoaded', () => {
   carregarDados();
   renderTudo();
+
+  // Botão adicionar jogador atrasado
+  document.getElementById('btnAdicionarJogador').addEventListener('click', () => {
+    const input = document.getElementById('inputNovoJogador');
+    const nome = input.value.trim();
+    if (!nome) { input.focus(); return; }
+    fila.push(criarJogador(nome));
+    input.value = '';
+    input.focus();
+    salvarEstado();
+    renderTudo();
+  });
+  document.getElementById('inputNovoJogador').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('btnAdicionarJogador').click();
+  });
   // Pedir permissão de notificação logo ao abrir
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission();

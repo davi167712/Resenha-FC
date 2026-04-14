@@ -451,12 +451,11 @@ body {
   font-family: 'Anton', sans-serif;
   font-size: clamp(3.5rem, 10vw, 5.5rem);
   line-height: 1;
-  min-width: 90px;
+  min-width: 80px;
   text-align: center;
-  background: var(--fundo);
-  border: 2px solid var(--borda);
-  border-radius: var(--radius-md);
-  padding: 6px 20px;
+  background: transparent;
+  border: none;
+  padding: 0 8px;
 }
  
 .vs {
@@ -1220,4 +1219,213 @@ body {
   pointer-events: none;
   z-index: 9998;
   display: none;
+}
+/* ==========================================
+   BOTÕES +/- DO PLACAR (redesign)
+   ========================================== */
+.placar-controle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-placar-mais,
+.btn-placar-menos {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .12s, filter .12s;
+}
+.btn-placar-mais {
+  background: var(--verde);
+  color: #003d1a;
+  box-shadow: 0 3px 10px rgba(0,230,118,.35);
+}
+.btn-placar-menos {
+  background: rgba(255,255,255,.1);
+  color: var(--txt-2);
+  border: 1px solid var(--borda);
+}
+.btn-placar-mais:hover  { filter: brightness(1.15); transform: scale(1.1); }
+.btn-placar-menos:hover { background: var(--vermelho); color: #fff; transform: scale(1.1); }
+.btn-placar-menos:disabled { opacity: .25; pointer-events: none; }
+
+/* ==========================================
+   BANCO DE INATIVOS
+   ========================================== */
+.banco-card {
+  border-color: rgba(150,150,150,.2) !important;
+}
+.banco-jogador {
+  background: var(--surface-2) !important;
+  opacity: .85;
+}
+.btn-voltar-banco {
+  background: rgba(41,121,255,.15);
+  color: var(--azul);
+  border: 1px solid rgba(41,121,255,.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.btn-voltar-banco:hover { background: var(--azul); color: #fff; }
+
+.btn-apagar-banco {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid rgba(255,23,68,.25);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.btn-apagar-banco:hover { background: var(--vermelho); color: #fff; }
+
+/* ==========================================
+   ADICIONAR JOGADOR
+   ========================================== */
+.add-jogador-card {
+  background: var(--surface-1);
+  border: 1.5px dashed rgba(0,230,118,.25);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.add-jogador-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 1.1rem;
+  color: var(--verde);
+  letter-spacing: .06em;
+  margin-bottom: 10px;
+}
+.add-jogador-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.add-jogador-input {
+  flex: 1;
+  min-width: 160px;
+  background: var(--fundo);
+  border: 1.5px solid var(--borda);
+  border-radius: var(--radius-sm);
+  color: var(--txt-1);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .95rem;
+  padding: 10px 14px;
+}
+.add-jogador-input:focus {
+  outline: none;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px var(--verde-glow);
+}
+
+/* ==========================================
+   GOLS TOTAL BADGE
+   ========================================== */
+.gols-total-badge {
+  background: rgba(255,214,0,.12) !important;
+  border-color: rgba(255,214,0,.25) !important;
+  color: var(--amarelo) !important;
+}
+
+/* ==========================================
+   RESPONSIVIDADE MOBILE MELHORADA
+   ========================================== */
+@media (max-width: 480px) {
+  /* Placar compacto sem fundo preto */
+  .placar-header {
+    padding: 10px 8px;
+    gap: 4px;
+  }
+  .placar-num {
+    font-size: clamp(2.8rem, 16vw, 4rem);
+    min-width: 60px;
+  }
+  .time-nome {
+    font-size: .85rem;
+    letter-spacing: .03em;
+  }
+  .btn-placar-mais,
+  .btn-placar-menos {
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+  }
+
+  /* Resultado: empilha verticalmente */
+  .resultado-btns {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .btn-venceu, .btn.btn-empate {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+    font-size: .95rem;
+  }
+
+  /* Times: 1 coluna */
+  .times-grid { grid-template-columns: 1fr; }
+
+  /* Jogador: nome em cima, botões embaixo */
+  .jogador-item { flex-wrap: wrap; gap: 6px; }
+  .jogador-nome { width: 100%; font-size: .92rem; }
+  .btn-gol, .btn-rmgol, .btn-sair {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 4px;
+    font-size: .78rem;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Fila e banco */
+  .fila-jogador { flex-wrap: wrap; gap: 6px; }
+  .fila-nome { width: 100%; }
+  .btn-voltar-banco, .btn-apagar-banco,
+  .btn-gol-fila, .btn-rmgol-fila, .btn-sair-fila {
+    flex: 1;
+    padding: 7px 4px;
+    font-size: .78rem;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Cronômetro */
+  .crono-card { flex-direction: column; align-items: center; gap: 10px; }
+  .crono-display { font-size: 2.8rem; }
+  .crono-btns { justify-content: center; flex-wrap: wrap; }
+
+  /* Rodapé empilhado */
+  .rodape-btns { flex-direction: column; align-items: stretch; }
+  .rodape-btns .btn { justify-content: center; width: 100%; }
+
+  /* Adicionar jogador */
+  .add-jogador-row { flex-direction: column; }
+  .add-jogador-input { min-width: unset; width: 100%; }
+}
+
+@media (min-width: 481px) and (max-width: 700px) {
+  .times-grid { grid-template-columns: 1fr 1fr; }
+  .resultado-btns { flex-wrap: wrap; gap: 8px; }
+  .btn-venceu { font-size: .85rem; padding: 11px 14px; }
 }
