@@ -253,10 +253,28 @@ document.getElementById('venceuA').addEventListener('click', () => {
   contarJogos(timeA);
   contarJogos(timeB);
   contarVitorias(timeA);
+
+  // Time B perde e vai pra fila
   timeB.forEach(j => { j.gols = 0; fila.push(j); });
   timeB = [];
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
   timeA.forEach(j => j.gols = 0);
+
+  // Saída direta: se alguém do time A atingiu vitoriasSaida, vai pro fim da fila
+  const vencedores = [...timeA];
+  vencedores.forEach(j => {
+    if (j.vitorias >= vitoriasSaida) {
+      const idx = timeA.indexOf(j);
+      if (idx !== -1) {
+        const saindo = timeA.splice(idx, 1)[0];
+        saindo.gols = 0;
+        fila.push(saindo);
+      }
+    }
+  });
+  // Completa time A se alguém saiu
+  while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
+
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
@@ -267,10 +285,28 @@ document.getElementById('venceuB').addEventListener('click', () => {
   contarJogos(timeA);
   contarJogos(timeB);
   contarVitorias(timeB);
+
+  // Time A perde e vai pra fila
   timeA.forEach(j => { j.gols = 0; fila.push(j); });
   timeA = [];
   while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   timeB.forEach(j => j.gols = 0);
+
+  // Saída direta: se alguém do time B atingiu vitoriasSaida, vai pro fim da fila
+  const vencedores = [...timeB];
+  vencedores.forEach(j => {
+    if (j.vitorias >= vitoriasSaida) {
+      const idx = timeB.indexOf(j);
+      if (idx !== -1) {
+        const saindo = timeB.splice(idx, 1)[0];
+        saindo.gols = 0;
+        fila.push(saindo);
+      }
+    }
+  });
+  // Completa time B se alguém saiu
+  while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
+
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
