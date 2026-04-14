@@ -275,7 +275,7 @@ function renderFila() {
       <span class="fila-nome">${j.nome}</span>
       <span class="stat-badge">🎮 ${j.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${j.vitorias}v</span>
-      <span class="gols-badge">⚽ ${j.gols || 0}</span>
+      <span class="gols-badge">⚽ ${historico[j.nome] || 0}</span>
       <button class="btn-gol-fila" data-idx="${idx}">+ GOL</button>
       <button class="btn-rmgol-fila" data-idx="${idx}" ${(j.gols||0)===0?"disabled":""}>− GOL</button>
       <button class="btn-sair-fila" data-idx="${idx}">SAIR</button>
