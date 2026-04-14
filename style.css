@@ -1103,7 +1103,7 @@ body {
   z-index: 9999;
   user-select: none;
 }
-/* ---- Contador de vitórias do time ---- */
+/* ---- Contador de vitórias do time --- */
 .vit-counter {
   display: inline-block;
   font-family: 'DM Sans', sans-serif;
