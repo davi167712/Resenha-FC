@@ -980,3 +980,98 @@ body {
 
 /* alias para compatibilidade */
 .bg-field { display: none; }
+/* ==========================================
+   CONFIG ROWS (tela 1)
+   ========================================== */
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.config-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--txt-2);
+  flex: 1;
+}
+
+.num-control-sm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.input-num-sm {
+  width: 52px;
+  background: var(--fundo);
+  border: 1.5px solid var(--borda);
+  border-radius: var(--radius-sm);
+  color: var(--txt-1);
+  font-family: 'Anton', sans-serif;
+  font-size: 1.3rem;
+  padding: 4px 2px;
+  text-align: center;
+
+}
+.input-num-sm::-webkit-inner-spin-button,
+.input-num-sm::-webkit-outer-spin-button { -webkit-appearance: none; }
+.input-num-sm:focus { outline: none; border-color: var(--verde); }
+
+.config-divider {
+  height: 1px;
+  background: var(--borda);
+  margin: 10px 0;
+}
+/* ---- Botão Relatório ---- */
+.btn-relatorio {
+  background: linear-gradient(135deg, #e65100, #ff6d00);
+  color: #fff;
+  font-weight: 800;
+  font-size: .95rem;
+  letter-spacing: .04em;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+  transition: filter .15s, transform .1s;
+  box-shadow: 0 4px 18px rgba(230,81,0,.35);
+}
+.btn-relatorio:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+/* ---- Assinatura ---- */
+.assinatura {
+  position: fixed;
+  bottom: 10px;
+  right: 16px;
+  font-family: 'Anton', sans-serif;
+  font-size: .72rem;
+  letter-spacing: .18em;
+  color: rgba(255,255,255,.25);
+  pointer-events: none;
+  z-index: 9999;
+  user-select: none;
+}
+/* ---- Contador de vitórias do time ---- */
+.vit-counter {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .72rem;
+  font-weight: 700;
+  background: rgba(255,214,0,.15);
+  border: 1px solid rgba(255,214,0,.3);
+  color: var(--amarelo, #ffd600);
+  border-radius: 99px;
+  padding: 2px 9px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: .02em;
+}

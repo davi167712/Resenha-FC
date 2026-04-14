@@ -48,11 +48,11 @@
     <!-- Times -->
     <div class="times-grid">
       <div class="time-card time-a">
-        <div class="time-title time-a-cor"> Time Com Camisa</div>
+        <div class="time-title time-a-cor"> Time Com Camisa <span class="vit-counter" id="vitTimesA">0/3</span></div>
         <ul id="listaA" class="jogadores-lista"></ul>
       </div>
       <div class="time-card time-b">
-        <div class="time-title time-b-cor"> Time Sem Camisa</div>
+        <div class="time-title time-b-cor"> Time Sem Camisa <span class="vit-counter" id="vitTimesB">0/3</span></div>
         <ul id="listaB" class="jogadores-lista"></ul>
       </div>
     </div>
@@ -78,6 +78,7 @@
       <button class="btn btn-gray"    id="btnReset">🔄 Resetar Placar</button>
       <button class="btn btn-gray"    id="btnZerarStats">📊 Zerar Stats</button>
       <button class="btn btn-red"     id="btnLimparHistorico">🗑️ Limpar Histórico</button>
+      <button class="btn btn-relatorio" id="btnRelatorio">📋 RELATÓRIO</button>
       <a href="index.html" class="btn btn-outline" id="btnVoltar">← Nova Pelada</a>
     </div>
 
@@ -92,5 +93,8 @@
       window.location.href = 'index.html';
     });
   </script>
+
+  <!-- Assinatura -->
+  <div class="assinatura">DAVI MENDES</div>
 </body>
 </html>
