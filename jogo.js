@@ -814,7 +814,7 @@ function _gerarPDF() {
   doc.setTextColor(80, 80, 80);
   doc.setFontSize(7);
   doc.setFont('helvetica', 'normal');
-  doc.text('Fut do IF © Relatório gerado automaticamente', W / 2, 291, { align: 'center' });
+  doc.text('Fut do IF © Relatório', W / 2, 291, { align: 'center' });
 
   doc.save('relatorio.pdf');
 }
