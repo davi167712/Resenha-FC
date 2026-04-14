@@ -1351,24 +1351,40 @@ body {
    RESPONSIVIDADE MOBILE MELHORADA
    ========================================== */
 @media (max-width: 480px) {
-  /* Placar compacto sem fundo preto */
+  /* Placar mobile: nome em cima/embaixo, placar centralizado */
   .placar-header {
-    padding: 10px 8px;
-    gap: 4px;
+    padding: 14px 10px 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .placar-header .time-nome {
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: .04em;
+  }
+  /* Garante que time B fica embaixo */
+  .placar-header .time-b-cor {
+    order: 3;
+  }
+  .placar-header .placar-box {
+    order: 2;
+    gap: 20px;
   }
   .placar-num {
-    font-size: clamp(2.8rem, 16vw, 4rem);
-    min-width: 60px;
+    font-size: clamp(2.8rem, 18vw, 4.5rem);
+    min-width: 64px;
   }
-  .time-nome {
-    font-size: .85rem;
-    letter-spacing: .03em;
+  .vs {
+    font-size: 1rem;
   }
   .btn-placar-mais,
   .btn-placar-menos {
-    width: 30px;
-    height: 30px;
-    font-size: 1.1rem;
+    width: 34px;
+    height: 34px;
+    font-size: 1.2rem;
   }
 
   /* Resultado: empilha verticalmente */
