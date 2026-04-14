@@ -421,6 +421,7 @@ document.getElementById('venceuA').addEventListener('click', () => {
   while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
 
+  salvarHistoricoPelada('Com Camisa', golsA, golsB, timeA, timeB);
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
@@ -452,6 +453,7 @@ document.getElementById('venceuB').addEventListener('click', () => {
   while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
 
+  salvarHistoricoPelada('Sem Camisa', golsA, golsB, timeA, timeB);
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
@@ -818,3 +820,67 @@ function _gerarPDF() {
 
   doc.save('relatorio.pdf');
 }
+// =============================================
+// HISTÓRICO DE PELADAS
+// =============================================
+
+function salvarHistoricoPelada(vencedor, placarA, placarB, jogadoresA, jogadoresB) {
+  const historicoPeladas = JSON.parse(localStorage.getItem('pelada_historico_partidas') || '[]');
+  historicoPeladas.push({
+    data: new Date().toLocaleString('pt-BR'),
+    vencedor,
+    placarA,
+    placarB,
+    timeA: jogadoresA.map(j => j.nome),
+    timeB: jogadoresB.map(j => j.nome),
+  });
+  localStorage.setItem('pelada_historico_partidas', JSON.stringify(historicoPeladas));
+}
+
+// =============================================
+// COMPARTILHAR NO WHATSAPP
+// =============================================
+
+function compartilharWhatsApp() {
+  const todos = [...timeA, ...timeB, ...fila];
+  const artilheiros = Object.entries(historico)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const maisVitorias = [...todos]
+    .sort((a, b) => (b.vitorias || 0) - (a.vitorias || 0))
+    .slice(0, 3);
+
+  const data = new Date().toLocaleDateString('pt-BR');
+
+  let texto = `⚽ *FUT DO IF — Relatório*\n📅 ${data}\n\n`;
+
+  if (artilheiros.length > 0) {
+    texto += `🏅 *Artilharia:*\n`;
+    artilheiros.forEach(([nome, gols], i) => {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`;
+      texto += `${medal} ${nome} — ${gols} gol${gols !== 1 ? 's' : ''}\n`;
+    });
+    texto += '\n';
+  }
+
+  if (maisVitorias.length > 0 && maisVitorias[0].vitorias > 0) {
+    texto += `🏆 *Mais vitórias:*\n`;
+    maisVitorias.forEach((j, i) => {
+      if (j.vitorias > 0) {
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉';
+        texto += `${medal} ${j.nome} — ${j.vitorias} vitória${j.vitorias !== 1 ? 's' : ''}\n`;
+      }
+    });
+    texto += '\n';
+  }
+
+  texto += `_Gerado pelo Fut do IF_ ⚽`;
+
+  const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+  window.open(url, '_blank');
+}
+
+document.getElementById('btnRelatorio').insertAdjacentHTML('afterend',
+  `<button class="btn btn-whatsapp" id="btnWhatsApp" onclick="compartilharWhatsApp()" style="background:#25D366;color:#fff;font-weight:bold;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;">📲 WhatsApp</button>`
+);
