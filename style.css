@@ -672,6 +672,21 @@ body {
   white-space: nowrap;
 }
 .btn-sair:hover { background: var(--vermelho); color: #fff; border-color: var(--vermelho); }
+.btn-sair-fila {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid rgba(255,23,68,.25);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+  margin-left: auto;
+}
+.btn-sair-fila:hover { background: var(--vermelho); color: #fff; border-color: var(--vermelho); }
  
 /* --- Fila de Espera --- */
 .fila-card {

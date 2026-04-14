@@ -166,6 +166,7 @@ function renderFila() {
       <span class="fila-nome">${j.nome}</span>
       <span class="stat-badge">🎮 ${j.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${j.vitorias}v</span>
+      <button class="btn-sair-fila" data-idx="${idx}">SAIR</button>
     `;
     lista.appendChild(li);
   });
@@ -246,10 +247,17 @@ function sairTime(qual, idx) {
   const time = qual === 'A' ? timeA : timeB;
   const removido = time.splice(idx, 1)[0];
   removido.gols = 0;
-  fila.push(removido);
+  // Jogador sai da pelada completamente (não vai para a fila)
   if (fila.length > 0) {
     time.push(fila.shift());
   }
+  salvarEstado();
+  renderTudo();
+}
+
+function sairFila(idx) {
+  // Remove jogador da fila de espera (sai da pelada)
+  fila.splice(idx, 1);
   salvarEstado();
   renderTudo();
 }
@@ -382,6 +390,8 @@ document.addEventListener('click', (e) => {
     removerGol(e.target.dataset.time, parseInt(e.target.dataset.idx));
   if (e.target.classList.contains('btn-sair'))
     sairTime(e.target.dataset.time, parseInt(e.target.dataset.idx));
+  if (e.target.classList.contains('btn-sair-fila'))
+    sairFila(parseInt(e.target.dataset.idx));
 });
 
 // =============================================
