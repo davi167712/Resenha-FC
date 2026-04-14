@@ -875,7 +875,7 @@ function compartilharWhatsApp() {
     texto += '\n';
   }
 
-  texto += `_Gerado pelo Fut do IF_ ⚽`;
+  texto += `_Gerado pelo Fut do IF_ ⚽ ass: davi.dev`;
 
   const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
   window.open(url, '_blank');
