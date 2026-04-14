@@ -447,32 +447,6 @@ body {
   position: relative;
 }
  
-.placar-controle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-.btn-placar-mais,
-.btn-placar-menos {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  border-radius: 8px;
-  width: 40px;
-  height: 40px;
-  font-size: 1.3rem;
-  font-weight: 900;
-  cursor: pointer;
-  line-height: 1;
-  transition: background .15s, transform .1s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-placar-mais:hover  { background: rgba(255,255,255,0.28); transform: scale(1.1); }
-.btn-placar-menos:hover { background: rgba(255,255,255,0.28); transform: scale(1.1); }
-.btn-placar-menos:disabled { opacity: .25; cursor: default; pointer-events: none; }
 .placar-num {
   font-family: 'Anton', sans-serif;
   font-size: clamp(3.5rem, 10vw, 5.5rem);
@@ -779,6 +753,7 @@ body {
   color: var(--txt-2);
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
   transition: border-color .15s;
 }
@@ -792,6 +767,10 @@ body {
   color: var(--txt-3);
   font-weight: 700;
   min-width: 14px;
+}
+.fila-nome {
+  flex: 1;
+  min-width: 80px;
 }
 .fila-jogador:first-child .fila-pos { color: var(--amarelo); }
  
@@ -1008,12 +987,18 @@ body {
   .jogador-item { flex-wrap: wrap; gap: 6px; padding: 10px; }
   .jogador-nome { font-size: .9rem; min-width: 100%; flex: unset; }
   .gols-badge, .stat-badge { font-size: .7rem; }
-  .btn-gol, .btn-rmgol, .btn-sair { font-size: .82rem; padding: 7px 12px; flex: 1; justify-content: center; text-align: center; }
+  .btn-gol, .btn-rmgol, .btn-sair { font-size: .82rem; padding: 7px 10px; flex: 1; justify-content: center; text-align: center; min-width: 60px; }
 
   /* Fila e artilharia */
   .fila-card, .artilharia-card { padding: 14px; }
-  .fila-lista { gap: 6px; }
-  .fila-jogador { font-size: .82rem; padding: 5px 10px; }
+  .fila-lista { gap: 8px; }
+  .fila-jogador { font-size: .82rem; padding: 8px 10px; flex-wrap: wrap; gap: 5px; }
+  .fila-nome { flex: 1; min-width: 80px; }
+  .btn-gol-fila, .btn-rmgol-fila, .btn-sair-fila {
+    font-size: .78rem;
+    padding: 6px 10px;
+    flex: 1;
+  }
 
   /* Artilharia */
   .artilharia-item { padding: 8px 10px; gap: 8px; }
@@ -1129,7 +1114,7 @@ body {
   z-index: 9999;
   user-select: none;
 }
-/* ---- Contador de vitórias do time ---- */
+/* ---- Contador de vitórias do time --- */
 .vit-counter {
   display: inline-block;
   font-family: 'DM Sans', sans-serif;
