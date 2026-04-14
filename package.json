@@ -1,0 +1,16 @@
+{
+  "name": "fut-do-ifg",
+  "version": "1.0.0",
+  "description": "Gerador de Times - Fut do IF",
+  "scripts": {
+    "dev": "npx http-server -p 3000",
+    "build": "echo 'No build step required for vanilla HTML/CSS/JS project'",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": ["futebol", "times", "gerador"],
+  "author": "DAVI MENDES",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  }
+}
