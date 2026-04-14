@@ -684,9 +684,37 @@ body {
   cursor: pointer;
   transition: background .15s, border-color .15s;
   white-space: nowrap;
-  margin-left: auto;
 }
 .btn-sair-fila:hover { background: var(--vermelho); color: #fff; border-color: var(--vermelho); }
+.btn-gol-fila {
+  background: transparent;
+  color: var(--verde, #4caf50);
+  border: 1px solid rgba(76,175,80,.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+}
+.btn-gol-fila:hover { background: var(--verde, #4caf50); color: #fff; border-color: var(--verde, #4caf50); }
+.btn-rmgol-fila {
+  background: transparent;
+  color: var(--amarelo, #ffc107);
+  border: 1px solid rgba(255,193,7,.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+}
+.btn-rmgol-fila:hover { background: var(--amarelo, #ffc107); color: #000; border-color: var(--amarelo, #ffc107); }
+.btn-rmgol-fila:disabled { opacity: .35; cursor: default; pointer-events: none; }
  
 /* --- Fila de Espera --- */
 .fila-card {
