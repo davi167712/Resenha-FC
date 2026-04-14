@@ -245,8 +245,7 @@ function renderTime(idLista, time, qual) {
     li.className = 'jogador-item';
     li.innerHTML = `
       <span class="jogador-nome">${jogador.nome}</span>
-      <span class="gols-badge" title="Gols na partida">⚽ ${jogador.gols}</span>
-      <span class="stat-badge gols-total-badge" title="Total de gols">🌟 ${historico[jogador.nome]||0}</span>
+      <span class="gols-badge" title="Total de gols acumulados">⚽ ${historico[jogador.nome]||0}</span>
       <span class="stat-badge">🎮 ${jogador.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${jogador.vitorias}v</span>
       <button class="btn-gol"   data-time="${qual}" data-idx="${idx}">+ GOL</button>
