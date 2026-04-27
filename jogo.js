@@ -1045,7 +1045,9 @@ function compartilharWhatsApp() {
     texto += '\n';
   }
 
-  texto += `_Gerado pelo Fut do IF_ ⚽ ass: DAVI MENDES`;
+  texto += `━━━━━━━━━━━━━━━\n`;
+  texto += `🚀 _Sistema desenvolvido por_ *DAVI MENDES*\n`;
+  texto += `⚡ _Fut do IF - Sua resenha organizada_`;
 
   const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
   window.open(url, '_blank');
