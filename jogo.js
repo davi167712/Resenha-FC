@@ -507,27 +507,189 @@ document.getElementById('venceuB').addEventListener('click', () => {
   renderTudo();
 });
 
-document.getElementById('empate').addEventListener('click', () => {
+// ─── Par ou Ímpar ───────────────────────────────────────────
+// Guarda as escolhas dos dois times antes de revelar
+let _parImparEscolhaA = null; // 'par' ou 'impar'
+let _parImparEscolhaB = null;
+let _parImparNumA = null;     // número mostrado pelo time A
+let _parImparNumB = null;
+
+function resolverEmpate(timeVencedor) {
+  // timeVencedor = 'A' ou 'B' — esse time sobe PRIMEIRO na fila
   Sons.empate();
   contarJogos(timeA);
   contarJogos(timeB);
-  // Empate zera contadores de vitórias dos 2 times
   vitTimeA = 0;
   vitTimeB = 0;
+
+  // Pool de todos os jogadores dos dois times, gols zerados
   const pool = [...timeA, ...timeB].map(j => ({ ...j, gols: 0 }));
   timeA = [];
   timeB = [];
+
+  // Primeiro: pega jogadores da fila para completar
   while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
-  pool.sort((a, b) => a.jogos - b.jogos);
+
+  // Ordena pool: time vencedor vai para o INÍCIO, perdedor para o FIM
+  const vencedores = timeVencedor === 'A' ? pool.slice(0, porTime) : pool.slice(porTime);
+  const perdedores = timeVencedor === 'A' ? pool.slice(porTime) : pool.slice(0, porTime);
+  const poolOrdenado = [...vencedores, ...perdedores];
+
   let pi = 0;
-  while (timeA.length < porTime && pi < pool.length) timeA.push(pool[pi++]);
-  while (timeB.length < porTime && pi < pool.length) timeB.push(pool[pi++]);
-  while (pi < pool.length) fila.push(pool[pi++]);
+  while (timeA.length < porTime && pi < poolOrdenado.length) timeA.push(poolOrdenado[pi++]);
+  while (timeB.length < porTime && pi < poolOrdenado.length) timeB.push(poolOrdenado[pi++]);
+  while (pi < poolOrdenado.length) fila.push(poolOrdenado[pi++]);
+
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
   renderTudo();
+}
+
+function abrirParImpar() {
+  // Reseta estado interno
+  _parImparEscolhaA = null;
+  _parImparEscolhaB = null;
+  _parImparNumA = null;
+  _parImparNumB = null;
+
+  const overlay = document.getElementById('parimpar-overlay');
+  overlay.classList.remove('hidden');
+
+  // Reseta visual
+  document.getElementById('parimpar-etapa2').classList.add('hidden');
+  document.getElementById('parimpar-resultado').classList.add('hidden');
+  document.getElementById('parimpar-aguarda').classList.add('hidden');
+
+  // Habilita todos os botões de escolha
+  document.querySelectorAll('.parimpar-btn').forEach(b => {
+    b.disabled = false;
+    b.classList.remove('selecionado');
+  });
+}
+
+function fecharParImpar() {
+  document.getElementById('parimpar-overlay').classList.add('hidden');
+}
+
+function verificarEtapa2() {
+  // Só avança quando os dois times escolheram
+  if (!_parImparEscolhaA || !_parImparEscolhaB) return;
+
+  // Mostra etapa 2: digitar números
+  const etapa2 = document.getElementById('parimpar-etapa2');
+  etapa2.classList.remove('hidden');
+
+  document.getElementById('parimpar-escolhas-feitas').innerHTML =
+    `<span class="escolha-badge escolha-a">👕 Com Camisa escolheu <strong>${_parImparEscolhaA.toUpperCase()}</strong></span>` +
+    `<span class="escolha-badge escolha-b">🎽 Sem Camisa escolheu <strong>${_parImparEscolhaB.toUpperCase()}</strong></span>`;
+
+  document.getElementById('parimpar-placar-texto').textContent = '👕 Com Camisa: qual número você vai mostrar?';
+
+  // Esconde a área de aguarda e mostra a primeira linha de números
+  document.getElementById('parimpar-aguarda').classList.add('hidden');
+
+  // Configura os botões de número (etapa2, primeiro bloco)
+  const numBtns = etapa2.querySelectorAll(':scope > .parimpar-num-btns .parimpar-num-btn');
+  numBtns.forEach(btn => {
+    btn.disabled = false;
+    btn.classList.remove('selecionado');
+    btn.onclick = () => {
+      _parImparNumA = parseInt(btn.dataset.num);
+      numBtns.forEach(b => { b.classList.remove('selecionado'); b.disabled = true; });
+      btn.classList.add('selecionado');
+
+      // Agora pede o número do time B
+      const aguarda = document.getElementById('parimpar-aguarda');
+      aguarda.classList.remove('hidden');
+      document.getElementById('parimpar-aguarda-txt').textContent = '🎽 Sem Camisa: qual número você vai mostrar?';
+
+      const numBtns2 = aguarda.querySelectorAll('.parimpar-num-btn');
+      numBtns2.forEach(b2 => {
+        b2.disabled = false;
+        b2.classList.remove('selecionado');
+        b2.onclick = () => {
+          _parImparNumB = parseInt(b2.dataset.num);
+          numBtns2.forEach(b3 => { b3.classList.remove('selecionado'); b3.disabled = true; });
+          b2.classList.add('selecionado');
+          revelarResultado();
+        };
+      });
+    };
+  });
+}
+
+function revelarResultado() {
+  const soma = _parImparNumA + _parImparNumB;
+  const resultado = soma % 2 === 0 ? 'par' : 'impar';
+
+  // Descobre quem ganhou
+  let vencedor = null;
+  if (_parImparEscolhaA === resultado) vencedor = 'A';
+  else if (_parImparEscolhaB === resultado) vencedor = 'B';
+  // Se os dois escolheram a mesma coisa (impossível no par/ímpar real,
+  // mas por segurança): sorteia
+  else vencedor = Math.random() < 0.5 ? 'A' : 'B';
+
+  const nomeVencedor = vencedor === 'A' ? 'Com Camisa' : 'Sem Camisa';
+  const nomePerdedor = vencedor === 'A' ? 'Sem Camisa' : 'Com Camisa';
+
+  // Mostra resultado
+  document.getElementById('parimpar-etapa2').classList.add('hidden');
+  const res = document.getElementById('parimpar-resultado');
+  res.classList.remove('hidden');
+
+  document.getElementById('parimpar-resultado-icone').textContent =
+    soma % 2 === 0 ? '🔵 PAR!' : '🔴 ÍMPAR!';
+
+  document.getElementById('parimpar-resultado-texto').innerHTML =
+    `<strong>${_parImparNumA} + ${_parImparNumB} = ${soma}</strong><br>` +
+    `<span class="resultado-destaque">🏆 ${nomeVencedor} GANHOU!</span><br>` +
+    `<span class="resultado-sub">Jogadores de ${nomeVencedor} sobem primeiro na fila</span>`;
+
+  // Botão confirmar fecha e processa
+  document.getElementById('parimpar-confirmar-btn').onclick = () => {
+    fecharParImpar();
+    resolverEmpate(vencedor);
+  };
+}
+
+// Eventos do modal par ou ímpar
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Botões de escolha (par/ímpar por time)
+  document.querySelectorAll('.parimpar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const time = btn.dataset.time;    // 'A' ou 'B'
+      const escolha = btn.dataset.escolha; // 'par' ou 'impar'
+
+      if (time === 'A') {
+        _parImparEscolhaA = escolha;
+        // Desabilita os dois botões do time A
+        document.querySelectorAll('.parimpar-btn[data-time="A"]').forEach(b => {
+          b.disabled = true;
+          b.classList.remove('selecionado');
+        });
+        btn.classList.add('selecionado');
+      } else {
+        _parImparEscolhaB = escolha;
+        document.querySelectorAll('.parimpar-btn[data-time="B"]').forEach(b => {
+          b.disabled = true;
+          b.classList.remove('selecionado');
+        });
+        btn.classList.add('selecionado');
+      }
+
+      verificarEtapa2();
+    });
+  });
+
+  document.getElementById('parimpar-cancelar-btn').addEventListener('click', fecharParImpar);
+});
+
+document.getElementById('empate').addEventListener('click', () => {
+  abrirParImpar();
 });
 
 document.getElementById('btnReset').addEventListener('click', () => {
