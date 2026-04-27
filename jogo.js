@@ -1023,7 +1023,7 @@ function compartilharWhatsApp() {
 
   const data = new Date().toLocaleDateString('pt-BR');
 
-  let texto = `⚽ *FUT DO IF — Relatório*\n📅 ${data}\n\n`;
+  let texto = `⚽ *FUT RESENHA — Relatório*\n📅 ${data}\n\n`;
 
   if (artilheiros.length > 0) {
     texto += `🏅 *Artilharia:*\n`;
@@ -1045,9 +1045,9 @@ function compartilharWhatsApp() {
     texto += '\n';
   }
 
-  texto += `━━━━━━━━━━━━━━━\n`;
-  texto += `🚀 _Sistema desenvolvido por_ *DAVI MENDES*\n`;
-  texto += `⚡ _Fut do IF - Sua resenha organizada_`;
+texto += `━━━━━━━━━━━━━━━\n`;
+texto += `👑 _Criado por_ *DAVI MENDES*\n`;
+texto += `🔥 _Onde a resenha vira organização_`;
 
   const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
   window.open(url, '_blank');
