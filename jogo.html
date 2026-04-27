@@ -121,12 +121,6 @@
   </div>
 
 
-  <!-- Modal Par ou Ímpar -->
-  <div id="parimpar-overlay" class="hidden">
-    <div id="parimpar-box">
-      <div id="parimpar-titulo">🤝 Empate! Par ou Ímpar?</div>
-      <div id="parimpar-sub">Escolha um time para vencer o par ou ímpar.<br>O time vencedor sobe primeiro na fila!</div>
-
       <div class="parimpar-times">
         <div class="parimpar-time parimpar-a">
           <span class="parimpar-time-label">👕 Com Camisa</span>
@@ -181,6 +175,19 @@
     </div>
   </div>
 
+
+  <!-- Modal Empate: quem ganhou o par ou ímpar -->
+  <div id="empate-overlay" class="hidden">
+    <div id="empate-box">
+      <div id="empate-titulo">🤝 Quem ganhou o par ou ímpar?</div>
+      <div class="empate-btns">
+        <button class="empate-btn empate-btn-a" id="empateGanhouA">👕 Com Camisa<br>Ganhou</button>
+        <button class="empate-btn empate-btn-b" id="empateGanhouB">🎽 Sem Camisa<br>Ganhou</button>
+      </div>
+      <button class="empate-cancelar" id="empateCancelar">✕ Cancelar</button>
+    </div>
+  </div>
+
   <!-- Canvas de confetes -->
   <canvas id="confete-canvas"></canvas>
 
@@ -197,4 +204,4 @@
   <!-- Assinatura -->
   <div class="assinatura">DAVI MENDES</div>
 </body>
-</html>s
+</html>

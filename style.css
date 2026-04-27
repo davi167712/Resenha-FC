@@ -1445,10 +1445,11 @@ body {
   .resultado-btns { flex-wrap: wrap; gap: 8px; }
   .btn-venceu { font-size: .85rem; padding: 11px 14px; }
 }
+
 /* =============================================
-   MODAL PAR OU ÍMPAR
+   MODAL EMPATE — Par ou Ímpar simples
    ============================================= */
-#parimpar-overlay {
+#empate-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.82);
@@ -1459,222 +1460,64 @@ body {
   backdrop-filter: blur(6px);
   padding: 16px;
 }
-#parimpar-overlay.hidden { display: none; }
+#empate-overlay.hidden { display: none; }
 
-#parimpar-box {
+#empate-box {
   background: #12121e;
   border: 1px solid #2ea043;
   border-radius: 18px;
-  padding: 28px 24px 20px;
-  max-width: 420px;
+  padding: 28px 24px 18px;
+  max-width: 380px;
   width: 100%;
   text-align: center;
   box-shadow: 0 0 60px rgba(46,160,67,.2);
   animation: fadeDown .22s ease;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-#parimpar-titulo {
-  font-family: 'Anton', sans-serif;
-  font-size: 1.4rem;
-  letter-spacing: .05em;
-  color: #fff;
-}
-
-#parimpar-sub {
-  font-size: .85rem;
-  color: #888;
-  line-height: 1.5;
-  margin-top: -8px;
-}
-
-/* Times lado a lado */
-.parimpar-times {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
 }
 
-.parimpar-time {
-  background: rgba(255,255,255,.04);
-  border-radius: 12px;
-  padding: 12px 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255,255,255,.07);
-}
-.parimpar-a { border-color: rgba(41,121,255,.25); }
-.parimpar-b { border-color: rgba(255,23,68,.25); }
-
-.parimpar-time-label {
-  font-family: 'Anton', sans-serif;
-  font-size: .82rem;
-  letter-spacing: .06em;
-  color: rgba(255,255,255,.6);
-}
-.parimpar-a .parimpar-time-label { color: #5b9fff; }
-.parimpar-b .parimpar-time-label { color: #ff5370; }
-
-.parimpar-opcoes {
-  display: flex;
-  gap: 6px;
-}
-
-.parimpar-btn {
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-family: 'Anton', sans-serif;
-  font-size: .85rem;
-  letter-spacing: .06em;
-  cursor: pointer;
-  transition: transform .12s, filter .12s;
-}
-.parimpar-btn:hover:not(:disabled) { filter: brightness(1.15); transform: scale(1.06); }
-.parimpar-btn:disabled { opacity: .3; cursor: default; }
-
-.parimpar-par   { background: rgba(41,121,255,.2);  color: #5b9fff; border: 1px solid rgba(41,121,255,.35); }
-.parimpar-impar { background: rgba(255,23,68,.2);   color: #ff5370; border: 1px solid rgba(255,23,68,.35); }
-
-/* Destaque quando selecionado */
-.parimpar-btn.selecionado.parimpar-par   { background: #2979ff; color: #fff; box-shadow: 0 0 14px rgba(41,121,255,.5); }
-.parimpar-btn.selecionado.parimpar-impar { background: #ff1744; color: #fff; box-shadow: 0 0 14px rgba(255,23,68,.5); }
-
-.parimpar-divider {
-  font-family: 'Anton', sans-serif;
-  font-size: .85rem;
-  color: rgba(255,255,255,.2);
-  letter-spacing: .1em;
-}
-
-/* Etapa 2: escolhas feitas + números */
-#parimpar-etapa2 {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: fadeDown .2s ease;
-}
-
-#parimpar-escolhas-feitas {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.escolha-badge {
-  font-size: .78rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 99px;
-}
-.escolha-a { background: rgba(41,121,255,.15); color: #5b9fff; border: 1px solid rgba(41,121,255,.25); }
-.escolha-b { background: rgba(255,23,68,.15);  color: #ff5370; border: 1px solid rgba(255,23,68,.25); }
-
-#parimpar-placar-texto,
-#parimpar-aguarda-txt {
-  font-size: .88rem;
-  font-weight: 600;
-  color: rgba(255,255,255,.7);
-}
-
-.parimpar-numero-row {
-  text-align: center;
-}
-
-.parimpar-num-btns {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.parimpar-num-btn {
-  width: 46px; height: 46px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.07);
-  color: #fff;
-  font-family: 'Anton', sans-serif;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background .12s, transform .1s, border-color .12s;
-}
-.parimpar-num-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,.16);
-  border-color: rgba(255,255,255,.35);
-  transform: scale(1.1);
-}
-.parimpar-num-btn.selecionado {
-  background: #2ea043;
-  border-color: #2ea043;
-  box-shadow: 0 0 14px rgba(46,160,67,.45);
-}
-.parimpar-num-btn:disabled { opacity: .3; cursor: default; }
-
-#parimpar-aguarda {
-  background: rgba(255,255,255,.04);
-  border-radius: 10px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border: 1px solid rgba(255,255,255,.07);
-  animation: fadeDown .2s ease;
-}
-
-/* Resultado */
-#parimpar-resultado {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  animation: fadeDown .25s ease;
-}
-
-#parimpar-resultado-icone {
-  font-family: 'Anton', sans-serif;
-  font-size: 2rem;
-  letter-spacing: .06em;
-}
-
-#parimpar-resultado-texto {
-  font-size: .9rem;
-  color: #aaa;
-  line-height: 1.7;
-}
-.resultado-destaque {
+#empate-titulo {
   font-family: 'Anton', sans-serif;
   font-size: 1.3rem;
   letter-spacing: .05em;
   color: #fff;
-  display: block;
-}
-.resultado-sub {
-  font-size: .78rem;
-  color: #666;
 }
 
-#parimpar-confirmar-btn {
-  background: #2ea043;
-  color: #fff;
+.empate-btns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.empate-btn {
+  flex: 1;
   border: none;
-  border-radius: 10px;
-  padding: 12px 32px;
+  border-radius: 12px;
+  padding: 18px 12px;
   font-family: 'Anton', sans-serif;
   font-size: 1rem;
-  letter-spacing: .06em;
+  letter-spacing: .04em;
+  line-height: 1.4;
   cursor: pointer;
-  transition: filter .15s, transform .1s;
-  box-shadow: 0 4px 18px rgba(46,160,67,.35);
+  transition: transform .12s, filter .12s, box-shadow .12s;
 }
-#parimpar-confirmar-btn:hover { filter: brightness(1.12); transform: translateY(-2px); }
+.empate-btn:hover { filter: brightness(1.12); transform: translateY(-3px); }
+.empate-btn:active { transform: translateY(0); }
 
-.parimpar-cancelar {
+.empate-btn-a {
+  background: linear-gradient(135deg, #1565c0, #2979ff);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(41,121,255,.35);
+}
+.empate-btn-b {
+  background: linear-gradient(135deg, #b71c1c, #ff1744);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(255,23,68,.35);
+}
+
+.empate-cancelar {
   background: transparent;
   border: none;
   color: rgba(255,255,255,.2);
@@ -1683,15 +1526,9 @@ body {
   padding: 4px 8px;
   transition: color .15s;
   font-family: 'DM Sans', sans-serif;
-  align-self: center;
-  margin-top: -6px;
 }
-.parimpar-cancelar:hover { color: rgba(255,255,255,.5); }
+.empate-cancelar:hover { color: rgba(255,255,255,.5); }
 
-/* Mobile */
-@media (max-width: 440px) {
-  #parimpar-box { padding: 20px 14px 16px; }
-  .parimpar-times { grid-template-columns: 1fr; gap: 8px; }
-  .parimpar-divider { display: none; }
-  .parimpar-num-btn { width: 40px; height: 40px; font-size: 1rem; }
+@media (max-width: 400px) {
+  .empate-btns { flex-direction: column; }
 }
