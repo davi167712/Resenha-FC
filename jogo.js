@@ -507,27 +507,54 @@ document.getElementById('venceuB').addEventListener('click', () => {
   renderTudo();
 });
 
-document.getElementById('empate').addEventListener('click', () => {
+// ─── Empate: modal simples ───────────────────────────────────
+function resolverEmpate(timeVencedor) {
   Sons.empate();
   contarJogos(timeA);
   contarJogos(timeB);
-  // Empate zera contadores de vitórias dos 2 times
   vitTimeA = 0;
   vitTimeB = 0;
+
   const pool = [...timeA, ...timeB].map(j => ({ ...j, gols: 0 }));
   timeA = [];
   timeB = [];
+
+  // Preenche times com jogadores da fila primeiro
   while (timeA.length < porTime && fila.length > 0) timeA.push(fila.shift());
   while (timeB.length < porTime && fila.length > 0) timeB.push(fila.shift());
-  pool.sort((a, b) => a.jogos - b.jogos);
+
+  // Time vencedor sobe PRIMEIRO na fila, perdedor vai por último
+  const vencedores = timeVencedor === 'A' ? pool.slice(0, porTime) : pool.slice(porTime);
+  const perdedores = timeVencedor === 'A' ? pool.slice(porTime)    : pool.slice(0, porTime);
+  const ordenado   = [...vencedores, ...perdedores];
+
   let pi = 0;
-  while (timeA.length < porTime && pi < pool.length) timeA.push(pool[pi++]);
-  while (timeB.length < porTime && pi < pool.length) timeB.push(pool[pi++]);
-  while (pi < pool.length) fila.push(pool[pi++]);
+  while (timeA.length < porTime && pi < ordenado.length) timeA.push(ordenado[pi++]);
+  while (timeB.length < porTime && pi < ordenado.length) timeB.push(ordenado[pi++]);
+  while (pi < ordenado.length) fila.push(ordenado[pi++]);
+
   resetarPlacar();
   if (window.reiniciarCrono) window.reiniciarCrono();
   salvarEstado();
   renderTudo();
+}
+
+document.getElementById('empate').addEventListener('click', () => {
+  document.getElementById('empate-overlay').classList.remove('hidden');
+});
+
+document.getElementById('empateGanhouA').addEventListener('click', () => {
+  document.getElementById('empate-overlay').classList.add('hidden');
+  resolverEmpate('A');
+});
+
+document.getElementById('empateGanhouB').addEventListener('click', () => {
+  document.getElementById('empate-overlay').classList.add('hidden');
+  resolverEmpate('B');
+});
+
+document.getElementById('empateCancelar').addEventListener('click', () => {
+  document.getElementById('empate-overlay').classList.add('hidden');
 });
 
 document.getElementById('btnReset').addEventListener('click', () => {
@@ -996,7 +1023,7 @@ function compartilharWhatsApp() {
 
   const data = new Date().toLocaleDateString('pt-BR');
 
-  let texto = `⚽ *FUT DO IF — Relatório*\n📅 ${data}\n\n`;
+  let texto = `⚽ *FUT RESENHA — Relatório*\n📅 ${data}\n\n`;
 
   if (artilheiros.length > 0) {
     texto += `🏅 *Artilharia:*\n`;
@@ -1018,7 +1045,9 @@ function compartilharWhatsApp() {
     texto += '\n';
   }
 
-  texto += `_Gerado pelo Fut do IF_ ⚽ ass: davi.dev`;
+texto += `━━━━━━━━━━━━━━━\n`;
+texto += `👑 _Criado por_ *DAVI MENDES*\n`;
+texto += `🔥 _Onde a resenha vira organização_`;
 
   const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
   window.open(url, '_blank');
