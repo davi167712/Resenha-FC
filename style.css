@@ -772,7 +772,8 @@ body {
   padding: 11px 14px;
   display: flex;
   align-items: center;
-  gap: 9px;
+  flex-wrap: wrap;
+  gap: 6px;
   animation: entrar .25s cubic-bezier(.4,0,.2,1) both;
   transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
@@ -791,10 +792,34 @@ body {
   flex: 1;
   font-weight: 600;
   font-size: .92rem;
-  min-width: 60px;
+  min-width: 50px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Linha de botões dos jogadores — sempre na segunda linha no mobile */
+.jogador-acoes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.jogador-acoes .btn-gol,
+.jogador-acoes .btn-rmgol,
+.jogador-acoes .btn-sair,
+.jogador-acoes .btn-gol-fila,
+.jogador-acoes .btn-rmgol-fila,
+.jogador-acoes .btn-sair-fila,
+.jogador-acoes .btn-voltar-banco,
+.jogador-acoes .btn-apagar-banco {
+  flex: 1;
+  text-align: center;
+  justify-content: center;
+  padding: 7px 6px;
+  font-size: .76rem;
 }
 
 .gols-badge {

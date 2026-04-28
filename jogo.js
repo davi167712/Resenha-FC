@@ -217,8 +217,10 @@ function renderBanco() {
       <span class="fila-nome">${j.nome}</span>
       <span class="stat-badge">🎮 ${j.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${j.vitorias}v</span>
-      <button class="btn-voltar-banco" data-idx="${idx}">↩ VOLTAR</button>
-      <button class="btn-apagar-banco" data-idx="${idx}">🗑 APAGAR</button>
+      <div class="jogador-acoes">
+        <button class="btn-voltar-banco" data-idx="${idx}">↩ VOLTAR</button>
+        <button class="btn-apagar-banco" data-idx="${idx}">🗑 APAGAR</button>
+      </div>
     `;
     lista.appendChild(li);
   });
@@ -248,9 +250,11 @@ function renderTime(idLista, time, qual) {
       <span class="gols-badge" title="Total de gols acumulados">⚽ ${historico[jogador.nome]||0}</span>
       <span class="stat-badge">🎮 ${jogador.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${jogador.vitorias}v</span>
-      <button class="btn-gol"   data-time="${qual}" data-idx="${idx}">+ GOL</button>
-      <button class="btn-rmgol" data-time="${qual}" data-idx="${idx}" ${jogador.gols === 0 ? 'disabled' : ''}>− GOL</button>
-      <button class="btn-sair"  data-time="${qual}" data-idx="${idx}">SAIR</button>
+      <div class="jogador-acoes">
+        <button class="btn-gol"   data-time="${qual}" data-idx="${idx}">+ GOL</button>
+        <button class="btn-rmgol" data-time="${qual}" data-idx="${idx}" ${jogador.gols === 0 ? 'disabled' : ''}>− GOL</button>
+        <button class="btn-sair"  data-time="${qual}" data-idx="${idx}">SAIR</button>
+      </div>
     `;
     lista.appendChild(li);
   });
@@ -276,9 +280,11 @@ function renderFila() {
       <span class="stat-badge">🎮 ${j.jogos}j</span>
       <span class="stat-badge stat-vit">🏆 ${j.vitorias}v</span>
       <span class="gols-badge">⚽ ${historico[j.nome] || 0}</span>
-      <button class="btn-gol-fila" data-idx="${idx}">+ GOL</button>
-      <button class="btn-rmgol-fila" data-idx="${idx}" ${(j.gols||0)===0?"disabled":""}>− GOL</button>
-      <button class="btn-sair-fila" data-idx="${idx}">SAIR</button>
+      <div class="jogador-acoes">
+        <button class="btn-gol-fila"   data-idx="${idx}">+ GOL</button>
+        <button class="btn-rmgol-fila" data-idx="${idx}" ${(j.gols||0)===0?"disabled":""}>− GOL</button>
+        <button class="btn-sair-fila"  data-idx="${idx}">SAIR</button>
+      </div>
     `;
     lista.appendChild(li);
   });
