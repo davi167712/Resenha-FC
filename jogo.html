@@ -147,12 +147,14 @@
       display: flex;
       align-items: center;
       gap: 20px;
+      justify-content: center;
     }
     .placar-controle {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
+      min-width: 60px;
     }
     .placar-num {
       font-family: 'Anton', sans-serif;
@@ -164,18 +166,19 @@
     }
     .btn-placar-mais,
     .btn-placar-menos {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      background: var(--surface);
+      background: rgba(255,255,255,0.05);
       color: var(--text-muted);
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.15s;
+      flex-shrink: 0;
     }
     .btn-placar-mais:hover { background: var(--verde-glow); border-color: var(--border-green); color: var(--verde); }
     .btn-placar-menos:hover { background: var(--vermelho-glow); border-color: rgba(226,75,74,0.3); color: var(--vermelho); }
@@ -200,10 +203,9 @@
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto auto;
       }
-      .btn-empate {
-        grid-column: 1 / -1;
-        order: -1;
-      }
+      #venceuA { order: 1; }
+      #venceuB { order: 2; }
+      #empate   { order: 3; grid-column: 1 / -1; }
     }
     .btn-resultado {
       padding: 14px 20px;
