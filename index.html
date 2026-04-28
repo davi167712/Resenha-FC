@@ -5,92 +5,514 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Resenha FC</title>
   <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --verde: #00FF87;
+      --verde-dark: #00C96A;
+      --verde-glow: rgba(0, 255, 135, 0.15);
+      --bg: #080C0A;
+      --bg2: #0D1410;
+      --bg3: #111A14;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --border-green: rgba(0,255,135,0.25);
+      --text: #E8F0EB;
+      --text-muted: rgba(232,240,235,0.5);
+      --text-dim: rgba(232,240,235,0.3);
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── CAMPO / FUNDO ── */
+    .bg-field {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-field::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,255,135,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 110%, rgba(0,255,135,0.05) 0%, transparent 70%);
+    }
+    .field-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.035;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.6) 79px, rgba(255,255,255,0.6) 80px),
+        repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.6) 79px, rgba(255,255,255,0.6) 80px);
+    }
+    .field-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .field-center-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+    }
+
+    /* ── CONTAINER ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 56px 0 40px;
+      animation: fadeDown 0.7s ease both;
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--verde);
+      background: var(--verde-glow);
+      border: 1px solid var(--border-green);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(72px, 14vw, 128px);
+      line-height: 0.88;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-shadow: 0 0 80px rgba(0,255,135,0.12);
+    }
+    .hero-title span {
+      display: block;
+      color: var(--verde);
+      text-shadow: 0 0 60px rgba(0,255,135,0.35);
+    }
+    .hero-sub {
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── FORM WRAPPER ── */
+    .form-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 720px) {
+      .form-wrapper { grid-template-columns: 1fr; }
+    }
+
+    /* ── PAINEL GLASS ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .panel:focus-within {
+      border-color: var(--border-green);
+    }
+
+    /* ── CAMPO DE JOGADORES ── */
+    .field-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .field-icon { font-size: 15px; }
+    .field-label {
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+    }
+    .contador {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--verde);
+      background: var(--verde-glow);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 320px;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 18px;
+      resize: none;
+      caret-color: var(--verde);
+    }
+    .textarea::placeholder { color: var(--text-dim); }
+    .textarea::-webkit-scrollbar { width: 4px; }
+    .textarea::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    /* ── COLUNA DIREITA ── */
+    .form-col-side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── BLOCO CONFIG ── */
+    .config-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 0;
+    }
+    .config-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      gap: 12px;
+    }
+    .config-row + .config-row {
+      border-top: 1px solid var(--border);
+    }
+    .config-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+      flex: 1;
+      white-space: nowrap;
+    }
+    .num-control {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .num-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .num-btn:hover { background: rgba(0,255,135,0.1); color: var(--verde); }
+    .num-btn:active { transform: scale(0.92); }
+    .input-num {
+      width: 36px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      -moz-appearance: textfield;
+    }
+    .input-num::-webkit-inner-spin-button,
+    .input-num::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    /* ── BOTÕES DE AÇÃO ── */
+    .side-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .action-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .action-btn:hover::before { opacity: 1; }
+    .action-btn:active { transform: scale(0.98); }
+
+    .action-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .action-text {
+      position: relative;
+      z-index: 1;
+    }
+    .action-text strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .action-text small {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 1px;
+      display: block;
+    }
+    .action-arrow {
+      margin-left: auto;
+      font-size: 16px;
+      color: var(--text-dim);
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .action-btn:hover .action-arrow { transform: translateX(3px); }
+
+    /* Primary — Verde */
+    .action-primary {
+      background: rgba(0,255,135,0.1);
+      border-color: rgba(0,255,135,0.3);
+    }
+    .action-primary::before { background: rgba(0,255,135,0.08); }
+    .action-primary:hover { border-color: rgba(0,255,135,0.55); box-shadow: 0 0 24px rgba(0,255,135,0.12); }
+    .action-primary .action-text strong { color: var(--verde); }
+    .action-primary .action-arrow { color: var(--verde); opacity: 0.6; }
+
+    /* Ordem — Azul */
+    .action-ordem {
+      background: rgba(55, 138, 221, 0.08);
+      border-color: rgba(55, 138, 221, 0.2);
+    }
+    .action-ordem::before { background: rgba(55,138,221,0.06); }
+    .action-ordem:hover { border-color: rgba(55,138,221,0.45); box-shadow: 0 0 24px rgba(55,138,221,0.1); }
+    .action-ordem .action-text strong { color: #60AAEF; }
+    .action-ordem .action-arrow { color: #60AAEF; opacity: 0.6; }
+
+    /* Danger — Vermelho */
+    .action-danger {
+      background: rgba(226,75,74,0.06);
+      border-color: rgba(226,75,74,0.15);
+    }
+    .action-danger::before { background: rgba(226,75,74,0.05); }
+    .action-danger:hover { border-color: rgba(226,75,74,0.35); box-shadow: 0 0 24px rgba(226,75,74,0.08); }
+    .action-danger .action-text strong { color: #F07878; }
+    .action-danger .action-arrow { color: #F07878; opacity: 0.6; }
+
+    /* ── MENSAGEM ERRO ── */
+    .msg-erro {
+      margin-top: 14px;
+      padding: 14px 18px;
+      background: rgba(226,75,74,0.1);
+      border: 1px solid rgba(226,75,74,0.25);
+      border-radius: var(--radius-sm);
+      color: #F07878;
+      font-size: 13px;
+      animation: fadeUp 0.3s ease both;
+    }
+    .hidden { display: none !important; }
+
+    /* ── TIP BAR ── */
+    .tip-bar {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      color: var(--text-muted);
+      animation: fadeUp 0.7s 0.25s ease both;
+    }
+    .tip-bar strong { color: #FFD166; }
+    .tip-icon { font-size: 14px; }
+
+    /* ── ASSINATURA ── */
+    .assinatura {
+      position: fixed;
+      bottom: 16px;
+      right: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.12);
+      z-index: 10;
+    }
+  </style>
 </head>
 <body class="page-index">
- 
-  <!-- Fundo: gramado com linhas -->
-  <div class="bg-grass">
-    <div class="grass-lines"></div>
-    <div class="grass-circle"></div>
-    <div class="grass-overlay"></div>
+
+  <!-- Fundo campo -->
+  <div class="bg-field">
+    <div class="field-lines"></div>
+    <div class="field-circle"></div>
+    <div class="field-center-dot"></div>
+    <div class="noise"></div>
   </div>
- 
+
   <div class="container">
- 
+
     <!-- Hero -->
     <header class="hero">
       <div class="hero-tag">⚽ Gerador de Times</div>
-      <h1 class="hero-title">RESENHA<br><span>FC</span></h1>
+      <h1 class="hero-title">RESENHA<span>FC</span></h1>
+      <p class="hero-sub">Organize seus times em segundos</p>
     </header>
- 
-    <!-- Formulário principal -->
+
+    <!-- Formulário -->
     <div class="form-wrapper">
- 
+
       <!-- Coluna esquerda: textarea -->
       <div class="form-col form-col-main">
-        <div class="field-header">
-          <span class="field-icon">👥</span>
-          <label class="field-label" for="nomes">Jogadores</label>
-          <span class="field-hint">um por linha</span>
-          <span class="contador" id="contador">0 jogadores</span>
+        <div class="panel" style="height: 100%; display: flex; flex-direction: column;">
+          <div class="field-header">
+            <span class="field-icon">👥</span>
+            <label class="field-label" for="nomes">Jogadores</label>
+            <span class="field-hint">um por linha</span>
+            <span class="contador" id="contador">0 jogadores</span>
+          </div>
+          <textarea
+            id="nomes"
+            class="textarea"
+            placeholder="Digite os nomes aqui&#10;Um por linha..."
+            rows="12"
+            spellcheck="false"
+            style="flex: 1;"
+          ></textarea>
         </div>
-        <textarea
-          id="nomes"
-          class="textarea"
-          placeholder="Digite os nomes aqui&#10;Um por linha..."
-          rows="12"
-          spellcheck="false"
-        ></textarea>
       </div>
- 
-      <!-- Coluna direita: configuração + ações -->
-      <div class="form-col form-col-side">
- 
-        <div class="side-block">
 
-          <!-- Jogadores por time -->
+      <!-- Coluna direita -->
+      <div class="form-col form-col-side">
+
+        <!-- Config -->
+        <div class="config-block">
           <div class="config-row">
             <label class="config-label" for="porTime">👥 Jogadores por time</label>
-            <div class="num-control-sm">
+            <div class="num-control">
               <button class="num-btn" id="numMenos">−</button>
-              <input type="number" id="porTime" class="input-num-sm" value="4" min="1" max="20"/>
+              <input type="number" id="porTime" class="input-num" value="4" min="1" max="20"/>
               <button class="num-btn" id="numMais">+</button>
             </div>
           </div>
-
-          <div class="config-divider"></div>
-
-          <!-- Vitórias para saída direta -->
           <div class="config-row">
-            <label class="config-label" for="vitoriasSaida">🏆 Vitórias p/ saída direta</label>
-            <div class="num-control-sm">
+            <label class="config-label" for="vitoriasSaida">🏆 Vitórias p/ saída</label>
+            <div class="num-control">
               <button class="num-btn" id="vitMenos">−</button>
-              <input type="number" id="vitoriasSaida" class="input-num-sm" value="3" min="1" max="20"/>
+              <input type="number" id="vitoriasSaida" class="input-num" value="3" min="1" max="20"/>
               <button class="num-btn" id="vitMais">+</button>
             </div>
           </div>
-
-          <div class="config-divider"></div>
-
-          <!-- Tempo em minutos -->
           <div class="config-row">
             <label class="config-label" for="tempoJogo">⏱️ Tempo (minutos)</label>
-            <div class="num-control-sm">
+            <div class="num-control">
               <button class="num-btn" id="tempoMenos">−</button>
-              <input type="number" id="tempoJogo" class="input-num-sm" value="7" min="1" max="60"/>
+              <input type="number" id="tempoJogo" class="input-num" value="7" min="1" max="60"/>
               <button class="num-btn" id="tempoMais">+</button>
             </div>
           </div>
-
         </div>
- 
+
+        <!-- Ações -->
         <div class="side-actions">
           <button class="action-btn action-primary" id="btnEmbaralhar">
             <span class="action-icon">🔀</span>
             <span class="action-text">
               <strong>Embaralhar</strong>
+              <small>sortear aleatório</small>
             </span>
+            <span class="action-arrow">→</span>
           </button>
 
           <button class="action-btn action-ordem" id="btnOrdem">
@@ -99,33 +521,33 @@
               <strong>Na Ordem</strong>
               <small>respeitar lista</small>
             </span>
+            <span class="action-arrow">→</span>
           </button>
- 
-        
- 
+
           <button class="action-btn action-danger" id="btnLimpar">
             <span class="action-icon">🗑️</span>
             <span class="action-text">
               <strong>Limpar</strong>
               <small>apagar tudo</small>
             </span>
+            <span class="action-arrow">→</span>
           </button>
         </div>
- 
+
+        <div id="msgErro" class="msg-erro hidden"></div>
+
       </div>
     </div>
- 
-    <div id="msgErro" class="msg-erro hidden"></div>
- 
-    <!-- Rodapé com dica -->
+
+    <!-- Tip -->
     <div class="tip-bar">
-      💡 <strong>Dica:</strong>  Colque os nomes na ordem que os jogadores chegaram!
+      <span class="tip-icon">💡</span>
+      <span><strong>Dica:</strong> Coloque os nomes na ordem que os jogadores chegaram!</span>
     </div>
- 
+
   </div>
- 
+
   <script src="script.js"></script>
-  <!-- Assinatura -->
   <div class="assinatura">DAVI MENDES</div>
 </body>
 </html>
