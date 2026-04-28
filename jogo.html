@@ -87,10 +87,10 @@
       z-index: 1;
       max-width: 960px;
       margin: 0 auto;
-      padding: 32px 24px 100px;
+      padding: 20px 14px 100px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
     }
 
     /* ── PAINEL BASE ── */
@@ -106,12 +106,23 @@
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px 28px;
+      padding: 20px 16px;
       animation: fadeDown 0.6s ease both;
+    }
+    @media (max-width: 480px) {
+      .placar-header {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        text-align: center;
+        gap: 14px;
+        padding: 20px 16px;
+      }
+      .placar-box { justify-content: center; }
+      .time-nome:last-child { text-align: center; }
     }
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-16px); }
@@ -184,6 +195,16 @@
       gap: 10px;
       animation: fadeUp 0.6s 0.1s ease both;
     }
+    @media (max-width: 480px) {
+      .resultado-btns {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+      }
+      .btn-empate {
+        grid-column: 1 / -1;
+        order: -1;
+      }
+    }
     .btn-resultado {
       padding: 14px 20px;
       border-radius: var(--radius);
@@ -225,12 +246,34 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 28px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
       animation: fadeUp 0.6s 0.15s ease both;
+    }
+    @media (max-width: 480px) {
+      .crono-card {
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 20px 16px;
+      }
+      .crono-display {
+        font-size: clamp(42px, 14vw, 64px) !important;
+      }
+      .crono-btns {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .crono-btn {
+        text-align: center;
+        padding: 10px 14px;
+        font-size: 13px;
+      }
     }
     .crono-display {
       font-family: 'Anton', sans-serif;
@@ -400,6 +443,10 @@
       gap: 10px;
       padding: 16px 18px;
     }
+    @media (max-width: 480px) {
+      .add-jogador-row { flex-direction: column; }
+      .btn-add { width: 100%; text-align: center; padding: 12px; }
+    }
     .add-jogador-input {
       flex: 1;
       background: rgba(255,255,255,0.05);
@@ -494,6 +541,15 @@
       flex-wrap: wrap;
       gap: 10px;
       animation: fadeUp 0.6s 0.4s ease both;
+    }
+    @media (max-width: 480px) {
+      .rodape-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .btn-rodape-relatorio {
+        grid-column: 1 / -1;
+      }
     }
     .btn-rodape {
       padding: 11px 18px;
