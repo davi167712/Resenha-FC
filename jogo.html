@@ -113,16 +113,20 @@
       padding: 20px 16px;
       animation: fadeDown 0.6s ease both;
     }
-    @media (max-width: 480px) {
+    @media (max-width: 560px) {
       .placar-header {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
-        gap: 14px;
+        gap: 10px;
         padding: 20px 16px;
       }
       .placar-box { justify-content: center; }
-      .time-nome:last-child { text-align: center; }
+      .time-nome { text-align: center !important; font-size: 18px; width: 100%; }
+      .time-nome.time-a-cor  { order: 1; }
+      .placar-box            { order: 2; }
+      .time-nome.time-b-cor  { order: 3; }
     }
     @keyframes fadeDown {
       from { opacity: 0; transform: translateY(-16px); }
@@ -135,7 +139,7 @@
 
     .time-nome {
       font-family: 'Anton', sans-serif;
-      font-size: clamp(15px, 2.5vw, 20px);
+      font-size: clamp(16px, 4vw, 22px);
       letter-spacing: 0.04em;
       line-height: 1.2;
     }
